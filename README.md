@@ -1,5 +1,5 @@
 # Prerequisites and Setup
-Ensure Python 3.x is installed on your system, with basic all these libraries - csv,os,json,tkinter,copy
+Ensure Python 3.x is installed on your system, with all these libraries - csv,os,json,tkinter,copy
 
 Verify that the file CourseList.csv is present in the same directory as the script. The CSV must contain the following columns in order: Course Name, Course Code, Raw Slots (e.g., A1+TA1), Timetable Code, Professor Name, and Course Type.
 View the CSV file provided to see the required layout.
