@@ -4,11 +4,11 @@ Ensure Python 3.x is installed on your system, with basic all these libraries - 
 Verify that the file CourseList.csv is present in the same directory as the script. The CSV must contain the following columns in order: Course Name, Course Code, Raw Slots (e.g., A1+TA1), Timetable Code, Professor Name, and Course Type.
 View the CSV file provided to see the required layout.
 
-Run the script using the following command in your terminal:# 
+Run the script using the following command in your terminal (bash) : 
 
-Bash
 python gui_counsellor.py
-
+or 
+python3 gui_counsellor.py
 
 # 1. Saved Combinations Tab
 This tab acts as the centralized repository for all schedule layouts that have been created or modified.
