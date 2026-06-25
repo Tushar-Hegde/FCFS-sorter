@@ -14,7 +14,9 @@ or
 # 1. Saved Combinations Tab
 This tab acts as the centralized repository for all schedule layouts that have been created or modified.
 
-Viewing Blueprints: Each entry shows a unique System ID, its specific registration priority sequence, and details for every course slot (including human-readable timings and professor assignments).
+Viewing Blueprints: Each entry shows a unique System ID, its specific registration priority sequence, and details for every course slot (including timings and professor assignments).
+
+Modifying Plans : Click the "Modify Plan" button . Specifics written later.
 
 Branching Plans: Click the "Branch Plan" button next to any blueprint. This duplicates the chosen combination under a new unique System ID and automatically opens the Modification Workspace, allowing you to create a secondary backup path without altering the original.
 
@@ -23,7 +25,7 @@ Deleting Plans: Use the "Delete Plan" button to permanently remove a schedule la
 # 2. Create New Plan Wizard Tab
 Use this tab to build a customized course schedule from scratch while ensuring no immediate timing overlaps occur.
 
-Dynamic Course Selection: At each step of the creation process, a dropdown menu presents all remaining unselected course codes. This allows you to pick courses in any arbitrary order instead of a predefined sequence.
+Dynamic Course Selection: At each step of the creation process, a dropdown menu presents all remaining unselected course codes. This allows you to pick courses in any arbitrary order.
 
 Clash Prevention: Once a course focus is selected via the dropdown, the interface evaluates your previous selections and displays only the section options that are entirely free of timing conflicts.
 
