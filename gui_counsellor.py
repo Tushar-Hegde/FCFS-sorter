@@ -122,16 +122,67 @@ def load_courses_from_csv(input_filename="CourseList.csv"):
             courses_dict.setdefault(course_code, []).append(section_data)
     return courses_dict
 
-def load_plans(filename="plans.json"):
+def load_plans(filename="plans_optimized.json", courses_dict=None):
     if os.path.exists(filename):
         with open(filename, 'r', encoding='utf-8') as f:
-            try: return json.load(f)
-            except json.JSONDecodeError: return {"combos": []}
+            try: 
+                plans = json.load(f)
+                
+                # Rehydrate the lightweight JSON using the loaded CSV data
+                if courses_dict:
+                    for combo in plans.get("combos", []):
+                        for sec in combo["sections"]:
+                            code = sec.get("code")
+                            is_blank = sec.get("is_blank", False)
+                            
+                            # Provide fallbacks
+                            sec["name"] = code
+                            sec["tt_code"] = "—"
+                            sec["type"] = "—"
+                            sec["minute_blocks"] = []
+                            
+                            if is_blank:
+                                if code in courses_dict:
+                                    sec["name"] = courses_dict[code][0]["name"]
+                            else:
+                                if code in courses_dict:
+                                    # Find the exact matching section signature in the CSV data
+                                    match = next((s for s in courses_dict[code] 
+                                                  if s["slots"] == sec.get("slots") 
+                                                  and s["professor"] == sec.get("professor")), None)
+                                    if match:
+                                        sec["name"] = match.get("name", code)
+                                        sec["tt_code"] = match.get("tt_code", "—")
+                                        sec["type"] = match.get("type", "—")
+                                        # Use deepcopy so combos don't accidentally share memory references
+                                        sec["minute_blocks"] = copy.deepcopy(match.get("minute_blocks", []))
+                return plans
+            
+            except json.JSONDecodeError: 
+                return {"combos": []}
     return {"combos": []}
 
-def save_plans(plans, filename="plans.json"):
+def save_plans(plans, filename="plans_optimized.json"):
+    # Create a dehydrated, lightweight copy to save to the disk
+    light_plans = {"combos": []}
+    for combo in plans.get("combos", []):
+        light_combo = {
+            "id": combo["id"],
+            "picking_order": copy.deepcopy(combo["picking_order"]),
+            "sections": []
+        }
+        for sec in combo["sections"]:
+            light_sec = {
+                "code": sec.get("code"),
+                "slots": sec.get("slots", "—"),
+                "professor": sec.get("professor", "—"),
+                "is_blank": sec.get("is_blank", False)
+            }
+            light_combo["sections"].append(light_sec)
+        light_plans["combos"].append(light_combo)
+        
     with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(plans, f, indent=4)
+        json.dump(light_plans, f, indent=4)
 
 def get_theory_code(code):
     if code.endswith('P'):
@@ -155,8 +206,12 @@ class MasterCounsellingApp:
         self.root.geometry("1150x760")
         self.root.minsize(1050, 700)
 
+        # 1. Load the CSV data first
         self.courses_dict = load_courses_from_csv("CourseList.csv")
-        self.plans = load_plans("plans.json")
+        
+        # 2. Pass the CSV data into load_plans to rehydrate the lightweight JSON
+        self.plans = load_plans("plans_optimized.json", self.courses_dict) 
+        
         self.slot_timing_map = generate_slot_timing_map()
 
         if not self.courses_dict:
@@ -330,7 +385,7 @@ class MasterCounsellingApp:
 
     def refresh_view_tab(self):
         for w in self.view_scroll_frame.winfo_children(): w.destroy()
-        self.plans = load_plans("plans.json")
+        self.plans = load_plans("plans_optimized.json")
 
         if not self.plans.get("combos"):
             self.combo_label.config(text="0 / 0")
