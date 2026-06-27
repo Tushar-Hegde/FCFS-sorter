@@ -69,30 +69,30 @@ def generate_minute_slot_mappings():
             slot_map.setdefault(slot, set()).update((day, m) for m in minutes)
     return slot_map
 
-def get_readable_timings(raw_slots_str):
-    """Translates slot strings like 'A1+TA1' into combined human-readable text."""
-    if not raw_slots_str or raw_slots_str == "—":
-        return "—"
+def generate_slot_timing_map():
+    """Returns a mapping from slot name -> human-readable timing string."""
     t_headers, t_grid, l_headers, l_grid = get_timetable_data()
-    slots = [s.strip() for s in raw_slots_str.split('+')]
-    result_pieces = []
-    
-    for slot in slots:
-        found = False
-        for day, s_list in t_grid.items():
-            if slot in s_list:
-                idx = s_list.index(slot)
-                result_pieces.append(f"{day} {t_headers[idx]}")
-                found = True
-                break
-        if not found:
-            for day, s_list in l_grid.items():
-                if slot in s_list:
-                    idx = s_list.index(slot)
-                    result_pieces.append(f"{day} {l_headers[idx]}")
-                    break
-                    
-    return ", ".join(result_pieces) if result_pieces else raw_slots_str
+    slot_timing = {}
+    for day, slots in t_grid.items():
+        for idx, slot in enumerate(slots):
+            if slot and slot != "—" and slot not in slot_timing:
+                slot_timing[slot] = t_headers[idx]
+    for day, slots in l_grid.items():
+        for idx, slot in enumerate(slots):
+            if slot and slot not in slot_timing:
+                slot_timing[slot] = l_headers[idx]
+    return slot_timing
+
+def get_timings_for_slots(raw_slots, slot_timing_map):
+    """Given a raw slot string like 'A1+TA2', return a display string of timings."""
+    parts = [s.strip() for s in raw_slots.split('+')]
+    timings = []
+    for slot in parts:
+        if slot in slot_timing_map:
+            timings.append(f"{slot}: {slot_timing_map[slot]}")
+        else:
+            timings.append(slot)
+    return " | ".join(timings)
 
 def load_courses_from_csv(input_filename="CourseList.csv"):
     slot_map = generate_minute_slot_mappings()
@@ -130,6 +130,26 @@ def save_plans(plans, filename="plans.json"):
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(plans, f, indent=4)
 
+def get_theory_code(code):
+    """If code ends with 'P', return the corresponding 'L' theory code."""
+    if code.endswith('P'):
+        return code[:-1] + 'L'
+    return None
+
+def get_lab_code(code):
+    """If code ends with 'L', return the corresponding 'P' lab code."""
+    if code.endswith('L'):
+        return code[:-1] + 'P'
+    return None
+
+def is_theory_lab_pair(code1, code2):
+    """Returns True if code1 and code2 are theory/lab pairs."""
+    if code1.endswith('L') and code2.endswith('P'):
+        return code1[:-1] == code2[:-1]
+    if code1.endswith('P') and code2.endswith('L'):
+        return code1[:-1] == code2[:-1]
+    return False
+
 
 # ==============================================================================
 # 2. MAIN APPLICATION GUI CLASS
@@ -139,12 +159,13 @@ class MasterCounsellingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Master Course Counseling Suite")
-        self.root.geometry("1100x750")
+        self.root.geometry("1000x700")
         self.root.configure(bg="#1e1e2e")
         
         # Load Baseline Datasets
         self.courses_dict = load_courses_from_csv("CourseList.csv")
         self.plans = load_plans("plans.json")
+        self.slot_timing_map = generate_slot_timing_map()
         
         if not self.courses_dict:
             messagebox.showerror("Missing Data", "CourseList.csv not found or empty! Please populate it first.")
@@ -196,28 +217,17 @@ class MasterCounsellingApp:
         elif current_tab == 2:
             self.initialize_live_mode()
 
-    def bundle_picking_order(self, sections, order):
-        """Helper to force matching lab courses (ending in 'P') to stay bundled immediately below their theory counterparts."""
-        new_order = []
-        visited = set()
-        
-        # Primary pass for theory elements or items without explicit links
-        for code in order:
-            if code in visited: continue
-            new_order.append(code)
-            visited.add(code)
-            
-            if code.endswith("L"):
-                lab_counterpart = code[:-1] + "P"
-                if lab_counterpart in order and lab_counterpart not in visited:
-                    new_order.append(lab_counterpart)
-                    visited.add(lab_counterpart)
-                    
-        # Catch-all safety pass
-        for code in order:
-            if code not in visited:
-                new_order.append(code)
-        return new_order
+    def format_course_display(self, sec):
+        """Returns a multi-line display string for a course section including timings."""
+        if sec.get("is_blank"):
+            return f"Course: {sec['code']} | {sec.get('name', '')}\n[ BLANK SLOT ] — Free for timing adjustments"
+        timings = get_timings_for_slots(sec['slots'], self.slot_timing_map)
+        return (
+            f"Course: {sec['code']} — {sec.get('name', '')}\n"
+            f"Slots: {sec['slots']}  |  Prof: {sec['professor']}\n"
+            f"Timings: {timings}\n"
+            f"TT Code: {sec['tt_code']}"
+        )
 
     # ==========================================================================
     # TAB 1: VIEW & MANAGE REPOSITORY LOGIC
@@ -258,13 +268,16 @@ class MasterCounsellingApp:
             lbl_title.pack(anchor="w", padx=15, pady=(10, 5))
             
             for code in combo["picking_order"]:
-                sec = next((s for s in combo["sections"] if s["code"] == code), None)
-                if not sec: continue
-                timings = get_readable_timings(sec['slots'])
-                sec_text = f" • {sec['code']:<8} | {sec['name']:<25} | Slots: {sec['slots']:<10} | Timing: {timings:<35} | Prof: {sec['professor']}"
+                sec = next(s for s in combo["sections"] if s["code"] == code)
+                timings = get_timings_for_slots(sec['slots'], self.slot_timing_map) if not sec.get("is_blank") else "—"
+                sec_text = (
+                    f" • {sec['code']:<8} | {sec.get('name',''):<30} | Slots: {sec['slots']:<12} | "
+                    f"Prof: {sec['professor']}\n"
+                    f"   {'':8}   Timings: {timings}"
+                )
                 tk.Label(card, text=sec_text, font=("Courier", 9, "bold"), fg=self.text_color, bg=self.card_color, justify="left", anchor="w").pack(anchor="w", padx=25)
                 
-            # Control Configuration Button Pack Stack (Packed Right to Left)
+            # Control Configuration Button Pack Stack
             del_btn = tk.Button(card, text="Delete Plan", font=("Helvetica", 9, "bold"), bg=self.alert_color, fg="#11111b", relief="flat", command=lambda cid=combo['id']: self.delete_combo(cid))
             del_btn.pack(side="right", padx=(5, 15), pady=10)
 
@@ -307,11 +320,10 @@ class MasterCounsellingApp:
         
         dialog = tk.Toplevel(self.root)
         dialog.title(f"Modify Plan Workspace — Blueprint ID: {combo_id}")
-        dialog.geometry("1050x650")
+        dialog.geometry("1050x700")
         dialog.configure(bg=self.bg_color)
-        dialog.grab_set()  # Enforce structural focus modality
+        dialog.grab_set()
         
-        # Keep tracking of working copy data configurations directly on the component structure
         dialog.working_combo = copy.deepcopy(combo)
         self.render_modify_main_view(dialog, combo_id)
 
@@ -342,15 +354,11 @@ class MasterCounsellingApp:
             card = tk.Frame(scroll_content, bg=self.card_color, bd=1, relief="solid", highlightbackground="#45475a")
             card.pack(fill="x", expand=True, pady=5, padx=5)
             
-            timings = get_readable_timings(sec.get('slots', '—'))
-            if sec.get("is_blank"):
-                desc = f"Course: {sec['code']}\n[ BLANK SLOT ]\nFree for timing adjustments"
-                tk.Label(card, text=desc, font=("Courier", 9, "bold"), bg=self.card_color, fg=self.muted_text, justify="left", anchor="w").pack(side="left", padx=10, pady=8)
-            else:
-                desc = f"Course: {sec['code']}\nSlots: {sec['slots']:<12}\nTiming: {timings}\nProf: {sec['professor']}\nCode: {sec['tt_code']}"
-                tk.Label(card, text=desc, font=("Courier", 9, "bold"), bg=self.card_color, fg=self.text_color, justify="left", anchor="w").pack(side="left", padx=10, pady=8)
+            desc = self.format_course_display(sec)
+            tk.Label(card, text=desc, font=("Courier", 9, "bold"), bg=self.card_color,
+                     fg=self.muted_text if sec.get("is_blank") else self.text_color,
+                     justify="left", anchor="w").pack(side="left", padx=10, pady=8)
             
-            # Action button holder
             btn_subframe = tk.Frame(card, bg=self.card_color)
             btn_subframe.pack(side="right", padx=10, pady=8)
             
@@ -360,22 +368,34 @@ class MasterCounsellingApp:
             if not sec.get("is_blank"):
                 blank_btn = tk.Button(btn_subframe, text="Make Blank", font=("Helvetica", 9, "bold"), bg=self.muted_text, fg="#11111b", relief="flat", command=lambda tc=code: self.apply_blank_slot(dialog, combo_id, tc))
                 blank_btn.pack(side="top", fill="x", pady=2)
-                
-            rem_btn = tk.Button(btn_subframe, text="Remove Entirely", font=("Helvetica", 9, "bold"), bg=self.alert_color, fg="#11111b", relief="flat", command=lambda tc=code: self.remove_course_from_modify(dialog, combo_id, tc))
-            rem_btn.pack(side="top", fill="x", pady=2)
-            
-        # Populate Right View (Sorting Track Priority Sequences)
-        prio_listbox = tk.Listbox(right_frame, font=("Helvetica", 10, "bold"), bg=self.card_color, fg=self.text_color, selectbackground=self.accent_color, selectforeground="#11111b", highlightthickness=0, bd=1)
+        
+        # Populate Right View: bundle-aware sorting
+        # Build bundles for picking order display
+        bundles = self._build_order_bundles(dialog.working_combo)
+        
+        prio_listbox = tk.Listbox(right_frame, font=("Helvetica", 10, "bold"), bg=self.card_color, fg=self.text_color,
+                                   selectbackground=self.accent_color, selectforeground="#11111b", highlightthickness=0, bd=1)
         prio_listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
-        for code in dialog.working_combo["picking_order"]:
-            sec = next(s for s in dialog.working_combo["sections"] if s["code"] == code)
-            prof_lbl = "BLANK" if sec.get("is_blank") else sec["professor"]
-            prio_listbox.insert(tk.END, f" {sec['code']} ({prof_lbl})")
+        
+        for bundle in bundles:
+            if len(bundle) == 1:
+                code = bundle[0]
+                sec = next(s for s in dialog.working_combo["sections"] if s["code"] == code)
+                prof_lbl = "BLANK" if sec.get("is_blank") else sec["professor"]
+                prio_listbox.insert(tk.END, f" {sec['code']} ({prof_lbl})")
+            else:
+                # Theory+Lab bundle
+                theory_code = next((c for c in bundle if c.endswith('L')), bundle[0])
+                lab_code = next((c for c in bundle if c.endswith('P')), bundle[1])
+                theory_sec = next(s for s in dialog.working_combo["sections"] if s["code"] == theory_code)
+                prio_listbox.insert(tk.END, f" 📦 {theory_code}+{lab_code} ({theory_sec['professor']})")
             
         btn_pane = tk.Frame(right_frame, bg=self.bg_color)
         btn_pane.pack(side="right", fill="y", pady=10, padx=(0, 10))
-        tk.Button(btn_pane, text="▲ Move Up", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=lambda: self.dialog_move_prio_up(prio_listbox, dialog)).pack(fill="x", pady=2)
-        tk.Button(btn_pane, text="▼ Move Down", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=lambda: self.dialog_move_prio_down(prio_listbox, dialog)).pack(fill="x", pady=2)
+        tk.Button(btn_pane, text="▲ Move Up", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color,
+                  command=lambda: self.dialog_move_bundle_up(prio_listbox, dialog, bundles)).pack(fill="x", pady=2)
+        tk.Button(btn_pane, text="▼ Move Down", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color,
+                  command=lambda: self.dialog_move_bundle_down(prio_listbox, dialog, bundles)).pack(fill="x", pady=2)
         
         # Dialog Control Bottom Command Bar
         footer = tk.Frame(dialog, bg=self.bg_color)
@@ -387,45 +407,73 @@ class MasterCounsellingApp:
         cancel_btn = tk.Button(footer, text="Discard & Cancel", font=("Helvetica", 10, "bold"), bg=self.alert_color, fg="#11111b", relief="flat", command=dialog.destroy)
         cancel_btn.pack(side="right", padx=5)
 
-    def remove_course_from_modify(self, dialog, combo_id, target_code):
-        dialog.working_combo["sections"] = [s for s in dialog.working_combo["sections"] if s["code"] != target_code]
-        dialog.working_combo["picking_order"] = [c for c in dialog.working_combo["picking_order"] if c != target_code]
-        self.render_modify_main_view(dialog, combo_id)
+    def _build_order_bundles(self, working_combo):
+        """Group picking_order into bundles: theory+lab pairs stay together, others are solo."""
+        order = working_combo["picking_order"]
+        bundles = []
+        skip = set()
+        for i, code in enumerate(order):
+            if code in skip:
+                continue
+            lab_code = get_lab_code(code)
+            if lab_code and lab_code in order:
+                bundles.append([code, lab_code])
+                skip.add(lab_code)
+            else:
+                theory_code = get_theory_code(code)
+                if theory_code and theory_code in order:
+                    # This is a lab course whose theory is already processed
+                    skip.add(code)
+                else:
+                    bundles.append([code])
+        return bundles
+
+    def _bundles_to_order(self, bundles):
+        """Flatten bundles back to a flat picking order list."""
+        order = []
+        for bundle in bundles:
+            order.extend(bundle)
+        return order
+
+    def dialog_move_bundle_up(self, listbox, dialog, bundles):
+        pos = listbox.curselection()
+        if not pos or pos[0] == 0: return
+        idx = pos[0]
+        bundles[idx], bundles[idx-1] = bundles[idx-1], bundles[idx]
+        dialog.working_combo["picking_order"] = self._bundles_to_order(bundles)
+        # Refresh listbox
+        text = listbox.get(idx)
+        prev_text = listbox.get(idx-1)
+        listbox.delete(idx)
+        listbox.insert(idx, prev_text)
+        listbox.delete(idx-1)
+        listbox.insert(idx-1, text)
+        listbox.selection_set(idx-1)
+
+    def dialog_move_bundle_down(self, listbox, dialog, bundles):
+        pos = listbox.curselection()
+        if not pos or pos[0] == listbox.size() - 1: return
+        idx = pos[0]
+        bundles[idx], bundles[idx+1] = bundles[idx+1], bundles[idx]
+        dialog.working_combo["picking_order"] = self._bundles_to_order(bundles)
+        text = listbox.get(idx)
+        next_text = listbox.get(idx+1)
+        listbox.delete(idx+1)
+        listbox.insert(idx+1, text)
+        listbox.delete(idx)
+        listbox.insert(idx, next_text)
+        listbox.selection_set(idx+1)
 
     def apply_blank_slot(self, dialog, combo_id, target_code):
         sec_idx = next(i for i, s in enumerate(dialog.working_combo["sections"]) if s["code"] == target_code)
         dialog.working_combo["sections"][sec_idx] = {
             "code": target_code,
-            "name": self.courses_dict[target_code][0]["name"],
+            "name": self.courses_dict[target_code][0]["name"] if target_code in self.courses_dict else target_code,
             "slots": "—", "tt_code": "—", "professor": "—", "type": "—",
             "minute_blocks": [],
             "is_blank": True
         }
         self.render_modify_main_view(dialog, combo_id)
-
-    def dialog_move_prio_up(self, listbox, dialog):
-        pos = listbox.curselection()
-        if not pos or pos[0] == 0: return
-        idx = pos[0]
-        text = listbox.get(idx)
-        listbox.delete(idx)
-        listbox.insert(idx - 1, text)
-        listbox.selection_set(idx - 1)
-        dialog.working_combo["picking_order"][idx], dialog.working_combo["picking_order"][idx-1] = dialog.working_combo["picking_order"][idx-1], dialog.working_combo["picking_order"][idx]
-        dialog.working_combo["picking_order"] = self.bundle_picking_order(dialog.working_combo["sections"], dialog.working_combo["picking_order"])
-        self.render_modify_main_view(dialog, dialog.working_combo["id"])
-
-    def dialog_move_prio_down(self, listbox, dialog):
-        pos = listbox.curselection()
-        if not pos or pos[0] == listbox.size() - 1: return
-        idx = pos[0]
-        text = listbox.get(idx)
-        listbox.delete(idx)
-        listbox.insert(idx + 1, text)
-        listbox.selection_set(idx + 1)
-        dialog.working_combo["picking_order"][idx], dialog.working_combo["picking_order"][idx+1] = dialog.working_combo["picking_order"][idx+1], dialog.working_combo["picking_order"][idx]
-        dialog.working_combo["picking_order"] = self.bundle_picking_order(dialog.working_combo["sections"], dialog.working_combo["picking_order"])
-        self.render_modify_main_view(dialog, dialog.working_combo["id"])
 
     def render_replace_section_view(self, dialog, combo_id, target_code):
         for w in dialog.winfo_children(): w.destroy()
@@ -433,55 +481,67 @@ class MasterCounsellingApp:
         container = tk.Frame(dialog, bg=self.bg_color)
         container.pack(fill="both", expand=True, padx=15, pady=15)
         
-        course_name = self.courses_dict[target_code][0]["name"]
+        course_name = self.courses_dict[target_code][0]["name"] if target_code in self.courses_dict else target_code
         
-        # Course Select Dropdown UI logic embedded during Modification state
         dk_header = tk.Frame(container, bg=self.bg_color)
         dk_header.pack(fill="x", pady=(0,15))
         tk.Label(dk_header, text="Modify target context focus course branch: ", font=("Helvetica", 10), fg=self.text_color, bg=self.bg_color).pack(side="left")
         
-        mod_dropdown = ttk.Combobox(dk_header, values=dialog.working_combo["picking_order"], state="readonly", font=("Helvetica", 10, "bold"), width=12)
-        mod_dropdown.set(target_code)
+        # Show course code + name in modify dropdown
+        order_codes = dialog.working_combo["picking_order"]
+        dropdown_display = []
+        for c in order_codes:
+            cname = self.courses_dict[c][0]["name"] if c in self.courses_dict else c
+            dropdown_display.append(f"{c} — {cname}")
+        
+        target_display = f"{target_code} — {course_name}"
+        mod_dropdown = ttk.Combobox(dk_header, values=dropdown_display, state="readonly", font=("Helvetica", 10, "bold"), width=30)
+        mod_dropdown.set(target_display)
         mod_dropdown.pack(side="left", padx=5)
-        mod_dropdown.bind("<<ComboboxSelected>>", lambda e: self.render_replace_section_view(dialog, combo_id, mod_dropdown.get()))
+        
+        def on_dropdown_select(event):
+            selected = mod_dropdown.get()
+            code_part = selected.split(" — ")[0].strip()
+            self.render_replace_section_view(dialog, combo_id, code_part)
+        
+        mod_dropdown.bind("<<ComboboxSelected>>", on_dropdown_select)
 
         tk.Label(container, text=f"Replace Section Sequence for: {target_code} — {course_name}", font=("Helvetica", 12, "bold"), fg=self.accent_color, bg=self.bg_color).pack(anchor="w", pady=(0, 15))
         
-        # Isolate the index inside current sections structure array mapping footprint
         sec_idx_in_combo = next(i for i, s in enumerate(dialog.working_combo["sections"]) if s["code"] == target_code)
         
-        # Calculate timeblocks locked down by OTHER courses in this exact setup configuration
         occupied_minutes = set()
         for i, sec in enumerate(dialog.working_combo["sections"]):
             if i != sec_idx_in_combo and not sec.get("is_blank"):
                 occupied_minutes.update(tuple(x) for x in sec["minute_blocks"])
+        
+        # Determine if target is a lab course — if so, filter by matching theory professor
+        lab_prof_filter = None
+        theory_code_for_lab = get_theory_code(target_code)  # returns *L code if target ends with P
+        if theory_code_for_lab and theory_code_for_lab in [s["code"] for s in dialog.working_combo["sections"]]:
+            theory_sec = next((s for s in dialog.working_combo["sections"] if s["code"] == theory_code_for_lab), None)
+            if theory_sec and not theory_sec.get("is_blank"):
+                lab_prof_filter = theory_sec["professor"]
                 
-        # Theory-Lab Professor Constraint Check
-        required_prof = None
-        if target_code.endswith("P"):
-            theory_code = target_code[:-1] + "L"
-            t_sec = next((s for s in dialog.working_combo["sections"] if s["code"] == theory_code), None)
-            if t_sec and not t_sec.get("is_blank"):
-                required_prof = t_sec["professor"]
-        elif target_code.endswith("L"):
-            lab_code = target_code[:-1] + "P"
-            l_sec = next((s for s in dialog.working_combo["sections"] if s["code"] == lab_code), None)
-            if l_sec and not l_sec.get("is_blank"):
-                required_prof = l_sec["professor"]
-
-        all_sections = self.courses_dict[target_code]
+        all_sections = self.courses_dict.get(target_code, [])
         valid_options = []
         for sec in all_sections:
-            if required_prof and sec["professor"] != required_prof:
+            if lab_prof_filter and sec["professor"] != lab_prof_filter:
                 continue
             sec_min = set(tuple(x) for x in sec["minute_blocks"])
             if occupied_minutes.isdisjoint(sec_min):
                 valid_options.append(sec)
                 
         if not valid_options:
-            tk.Label(container, text="⚠️ CRITICAL LAYOUT CONFLICT: No available clash-free slots exist for this item\nwithout shifting early anchor positions or marking other components blank first.", font=("Helvetica", 11, "bold"), fg=self.alert_color, bg=self.bg_color, justify="left").pack(pady=30)
+            msg = "⚠️ CRITICAL LAYOUT CONFLICT: No available clash-free slots exist for this item\nwithout shifting early anchor positions or marking other components blank first."
+            if lab_prof_filter:
+                msg += f"\n\n(Lab filtered to professor: {lab_prof_filter})"
+            tk.Label(container, text=msg, font=("Helvetica", 11, "bold"), fg=self.alert_color, bg=self.bg_color, justify="left").pack(pady=30)
             tk.Button(container, text="↩ Back to Blueprint Panel", font=("Helvetica", 10, "bold"), bg=self.accent_color, fg="#11111b", relief="flat", command=lambda: self.render_modify_main_view(dialog, combo_id)).pack(pady=5)
             return
+
+        if lab_prof_filter:
+            tk.Label(container, text=f"🔒 Lab sections filtered to professor: {lab_prof_filter}", font=("Helvetica", 9, "italic"), fg="#cba6f7", bg=self.bg_color).pack(anchor="w", pady=(0, 8))
 
         scroll_frame_container = tk.Frame(container, bg=self.bg_color)
         scroll_frame_container.pack(fill="both", expand=True)
@@ -500,8 +560,10 @@ class MasterCounsellingApp:
             btn_card = tk.Frame(list_frame, bg=self.card_color, bd=1, relief="solid", highlightbackground="#45475a")
             btn_card.pack(fill="x", expand=True, pady=4, padx=5)
             
-            timings = get_readable_timings(opt['slots'])
-            desc = f"Slots: {opt['slots']:<10} | Timing: {timings:<35} | Professor: {opt['professor']:<25}\nCode: {opt['tt_code']}"
+            timings = get_timings_for_slots(opt['slots'], self.slot_timing_map)
+            desc = (f"Slots: {opt['slots']:<12} | Professor: {opt['professor']:<25}\n"
+                    f"Timings: {timings}\n"
+                    f"TT Code: {opt['tt_code']}")
             tk.Label(btn_card, text=desc, font=("Courier", 9, "bold"), bg=self.card_color, fg=self.text_color, justify="left", anchor="w").pack(side="left", padx=10, pady=8)
             
             sel_btn = tk.Button(btn_card, text="Select Section", font=("Helvetica", 9, "bold"), bg=self.success_color, fg="#11111b", relief="flat", command=lambda choice_sec=opt: self.apply_section_replacement(dialog, combo_id, sec_idx_in_combo, choice_sec))
@@ -516,7 +578,6 @@ class MasterCounsellingApp:
         self.render_modify_main_view(dialog, combo_id)
 
     def save_dialog_modifications(self, dialog, combo_id):
-        # Strict validation ensuring no entries remain blank upon storage action execution triggers
         for sec in dialog.working_combo["sections"]:
             if sec.get("is_blank"):
                 messagebox.showerror("Validation Failed", f"Cannot commit configuration plan updates! Course code '{sec['code']}' is currently set as a Blank Slot. Please assign a valid timing section first.")
@@ -531,7 +592,6 @@ class MasterCounsellingApp:
                 messagebox.showwarning("Duplicate Layout Found", f"Clash error! This modified setup profile configuration matches an existing blueprint entry (System ID {existing['id']}).")
                 return
                 
-        # Commit back to master structure file dataset
         idx_to_update = next(i for i, c in enumerate(self.plans["combos"]) if c["id"] == combo_id)
         self.plans["combos"][idx_to_update] = dialog.working_combo
         save_plans(self.plans)
@@ -558,7 +618,6 @@ class MasterCounsellingApp:
         self.wizard_step = 0
         self.wizard_selections = []
         self.wizard_occupied_minutes = set()
-        self.force_priority_ordering = False
         self.render_builder_step()
 
     def render_builder_step(self):
@@ -567,80 +626,98 @@ class MasterCounsellingApp:
 
         tk.Label(self.right_panel, text="Current Step Selections Footprint:", font=("Helvetica", 10, "bold"), bg=self.bg_color, fg=self.text_color).pack(anchor="w", padx=10, pady=5)
         for s in self.wizard_selections:
-            timings = get_readable_timings(s['slots'])
-            tk.Label(self.right_panel, text=f"✔ {s['code']} -> {s['slots']} ({timings}) [{s['professor']}]", font=("Helvetica", 9), fg=self.success_color, bg=self.bg_color).pack(anchor="w", padx=20)
+            timings = get_timings_for_slots(s['slots'], self.slot_timing_map)
+            tk.Label(self.right_panel,
+                     text=f"✔ {s['code']} — {s['name']}\n   {s['slots']} | {s['professor']}\n   {timings}",
+                     font=("Helvetica", 9), fg=self.success_color, bg=self.bg_color, justify="left").pack(anchor="w", padx=20, pady=2)
 
-        # Non-compulsory structure: Allow finalizing early via the manual force trigger flag rule
         selected_codes = [s["code"] for s in self.wizard_selections]
         remaining_codes = [c for c in self.builder_course_codes if c not in selected_codes]
 
-        if remaining_codes and not self.force_priority_ordering:
-            # Formulate selection framework header controls row
+        # Determine if next selection should be a locked lab (paired to last theory)
+        locked_lab_code = None
+        locked_lab_prof = None
+        if self.wizard_selections:
+            last_sel = self.wizard_selections[-1]
+            lab_code = get_lab_code(last_sel["code"])
+            if lab_code and lab_code in self.courses_dict and lab_code not in selected_codes:
+                locked_lab_code = lab_code
+                locked_lab_prof = last_sel["professor"]
+
+        if remaining_codes or locked_lab_code:
             header_row = tk.Frame(self.left_panel, bg=self.bg_color)
             header_row.pack(fill="x", pady=(0, 10))
-            
-            tk.Label(header_row, text="Choose Course Focus -> ", font=("Helvetica", 10), fg=self.muted_text, bg=self.bg_color).pack(side="left")
-            
-            # Show course code AND name in the dropdown values tracking footprint array mappings
-            dropdown_labels = [f"{c} - {self.courses_dict[c][0]['name']}" for c in remaining_codes]
-            
-            course_cb = ttk.Combobox(header_row, values=dropdown_labels, state="readonly", font=("Helvetica", 10, "bold"), width=35)
-            course_cb.pack(side="left", padx=5)
-            course_cb.set(dropdown_labels[0])
-            
-            # Reactive UI trigger framework attachment logic
-            def change_focus_course(event):
-                raw_code = course_cb.get().split(" - ")[0]
-                self.render_sections_for_selected_course(raw_code)
-                
-            course_cb.bind("<<ComboboxSelected>>", change_focus_course)
-            
+
+            if locked_lab_code:
+                # Force-select lab course next
+                tk.Label(header_row,
+                         text=f"🔒 Next: Lab for {locked_lab_code} (locked to Prof: {locked_lab_prof})",
+                         font=("Helvetica", 10, "bold"), fg="#cba6f7", bg=self.bg_color).pack(side="left")
+                current_code = locked_lab_code
+            else:
+                tk.Label(header_row, text="Choose Course: ", font=("Helvetica", 10), fg=self.muted_text, bg=self.bg_color).pack(side="left")
+
+                # Build dropdown showing "CODE — Name"
+                display_values = []
+                for c in remaining_codes:
+                    cname = self.courses_dict[c][0]["name"] if c in self.courses_dict else c
+                    display_values.append(f"{c} — {cname}")
+
+                course_cb = ttk.Combobox(header_row, values=display_values, state="readonly", font=("Helvetica", 10, "bold"), width=32)
+                course_cb.pack(side="left", padx=5)
+                course_cb.set(display_values[0])
+                current_code = remaining_codes[0]
+
+                def change_focus_course(event):
+                    selected_display = course_cb.get()
+                    code_part = selected_display.split(" — ")[0].strip()
+                    self.render_sections_for_selected_course(code_part, prof_filter=None)
+
+                course_cb.bind("<<ComboboxSelected>>", change_focus_course)
+
+            # "Save Combo" button — allows stopping selection at any point
             if self.wizard_selections:
-                finish_btn = tk.Button(header_row, text="🏁 Finish & Save Combo", font=("Helvetica", 9, "bold"), bg=self.accent_color, fg="#11111b", relief="flat", command=self.force_wizard_completion)
-                finish_btn.pack(side="right", padx=5)
-            
-            # Content target container pane
+                save_now_btn = tk.Button(header_row, text="💾 Save Combo & Set Order",
+                                         font=("Helvetica", 9, "bold"), bg=self.success_color, fg="#11111b",
+                                         relief="flat", command=self.render_priority_sorting_interface)
+                save_now_btn.pack(side="right", padx=10)
+
             self.builder_sections_container = tk.Frame(self.left_panel, bg=self.bg_color)
             self.builder_sections_container.pack(fill="both", expand=True)
-            
-            # Run initialization execution loop mapping track footprint
-            self.render_sections_for_selected_course(course_cb.get().split(" - ")[0])
+
+            prof_filter = locked_lab_prof if locked_lab_code else None
+            self.render_sections_for_selected_course(current_code if locked_lab_code else remaining_codes[0], prof_filter=prof_filter)
+
+            if locked_lab_code:
+                # Bind the combobox for the locked lab scenario (no dropdown, just render)
+                pass
         else:
             self.render_priority_sorting_interface()
 
-    def force_wizard_completion(self):
-        self.force_priority_ordering = True
-        self.render_builder_step()
-
-    def render_sections_for_selected_course(self, current_code):
+    def render_sections_for_selected_course(self, current_code, prof_filter=None):
         for w in self.builder_sections_container.winfo_children(): w.destroy()
             
-        course_name = self.courses_dict[current_code][0]["name"]
-        title = tk.Label(self.builder_sections_container, text=f"{current_code} — {course_name}", font=("Helvetica", 14, "bold"), fg=self.accent_color, bg=self.bg_color)
+        course_name = self.courses_dict[current_code][0]["name"] if current_code in self.courses_dict else current_code
+        title_text = f"{current_code} — {course_name}"
+        if prof_filter:
+            title_text += f"  🔒 (Prof locked: {prof_filter})"
+        title = tk.Label(self.builder_sections_container, text=title_text, font=("Helvetica", 14, "bold"), fg=self.accent_color, bg=self.bg_color)
         title.pack(anchor="w", pady=(5, 15))
         
-        # Check if theory or lab constraint professor filter is active based on code footprint tracking rules
-        required_prof = None
-        if current_code.endswith("P"):
-            theory_code = current_code[:-1] + "L"
-            t_match = next((s for s in self.wizard_selections if s["code"] == theory_code), None)
-            if t_match: required_prof = t_match["professor"]
-        elif current_code.endswith("L"):
-            lab_code = current_code[:-1] + "P"
-            l_match = next((s for s in self.wizard_selections if s["code"] == lab_code), None)
-            if l_match: required_prof = l_match["professor"]
-
-        all_sections = self.courses_dict[current_code]
+        all_sections = self.courses_dict.get(current_code, [])
         valid_options = []
         for sec in all_sections:
-            if required_prof and sec["professor"] != required_prof:
+            if prof_filter and sec["professor"] != prof_filter:
                 continue
             sec_blocks = set(tuple(x) for x in sec["minute_blocks"])
             if self.wizard_occupied_minutes.isdisjoint(sec_blocks):
                 valid_options.append(sec)
                 
         if not valid_options:
-            tk.Label(self.builder_sections_container, text="⚠️ CRITICAL ERROR: Class Overlap or Professor Co-requisite Mismatch!\nNo available slots remain open for this course given earlier choices.", font=("Helvetica", 11, "bold"), fg=self.alert_color, bg=self.bg_color, justify="left").pack(pady=20)
+            msg = "⚠️ CRITICAL ERROR: Class Overlap Conflict!\nNo available slots remain open for this course given earlier choices."
+            if prof_filter:
+                msg += f"\n(Filtered to professor: {prof_filter})"
+            tk.Label(self.builder_sections_container, text=msg, font=("Helvetica", 11, "bold"), fg=self.alert_color, bg=self.bg_color, justify="left").pack(pady=20)
             tk.Button(self.builder_sections_container, text="↩ Restart Wizard from Beginning", font=("Helvetica", 10, "bold"), bg=self.accent_color, fg="#11111b", relief="flat", command=self.reset_builder_wizard).pack(pady=10)
             return
             
@@ -661,8 +738,10 @@ class MasterCounsellingApp:
             btn_card = tk.Frame(list_frame, bg=self.card_color, bd=1, relief="solid", highlightbackground="#45475a")
             btn_card.pack(fill="x", expand=True, pady=4, padx=5)
             
-            timings = get_readable_timings(opt['slots'])
-            desc = f"Slots: {opt['slots']:<10} | Timing: {timings:<35} | Professor: {opt['professor']:<25}\nCode: {opt['tt_code']}"
+            timings = get_timings_for_slots(opt['slots'], self.slot_timing_map)
+            desc = (f"Slots: {opt['slots']:<12} | Professor: {opt['professor']:<25}\n"
+                    f"Timings: {timings}\n"
+                    f"TT Code: {opt['tt_code']}")
             tk.Label(btn_card, text=desc, font=("Courier", 9, "bold"), bg=self.card_color, fg=self.text_color, justify="left", anchor="w").pack(side="left", padx=10, pady=8)
             
             sel_btn = tk.Button(btn_card, text="Pick Section", font=("Helvetica", 9, "bold"), bg=self.success_color, fg="#11111b", relief="flat", command=lambda choice_sec=opt: self.advance_builder_step(choice_sec))
@@ -675,73 +754,96 @@ class MasterCounsellingApp:
         self.render_builder_step()
 
     def render_priority_sorting_interface(self):
-        # Clear out any existing widgets on the left panel first to prevent duplication upon refresh
-        for w in self.left_panel.winfo_children(): 
-            w.destroy()
+        for w in self.left_panel.winfo_children(): w.destroy()
 
         lbl_prio = tk.Label(self.left_panel, text="🏁 Configure Picking Order Priority Sequence", font=("Helvetica", 13, "bold"), fg=self.success_color, bg=self.bg_color)
         lbl_prio.pack(anchor="w", pady=(0, 5))
-        tk.Label(self.left_panel, text="Sort selections from top to bottom based on registration risk priority levels (Labs remain bundled to Theory):", font=("Helvetica", 9, "italic"), fg=self.muted_text, bg=self.bg_color).pack(anchor="w", pady=(0, 15))
+        tk.Label(self.left_panel, text="Sort selections from top to bottom based on registration risk priority levels.\n📦 Theory+Lab pairs move together as a bundle.", font=("Helvetica", 9, "italic"), fg=self.muted_text, bg=self.bg_color).pack(anchor="w", pady=(0, 15))
         
         listbox_frame = tk.Frame(self.left_panel, bg=self.bg_color)
         listbox_frame.pack(fill="both", expand=True)
         
-        self.prio_listbox = tk.Listbox(listbox_frame, font=("Helvetica", 10, "bold"), bg=self.card_color, fg=self.text_color, selectbackground=self.accent_color, selectforeground="#11111b", highlightthickness=0, bd=1)
+        self.prio_listbox = tk.Listbox(listbox_frame, font=("Helvetica", 10, "bold"), bg=self.card_color, fg=self.text_color,
+                                        selectbackground=self.accent_color, selectforeground="#11111b", highlightthickness=0, bd=1)
         self.prio_listbox.pack(side="left", fill="both", expand=True, padx=(0, 10))
         
-        # Enforce initial tracking rule parameters for automatic co-requisite bundle sorting patterns
-        current_codes = [s["code"] for s in self.wizard_selections]
-        bundled_codes = self.bundle_picking_order(self.wizard_selections, current_codes)
+        # Build bundles from current selections
+        self.prio_bundles = self._build_selection_bundles(self.wizard_selections)
         
-        reordered_selections = []
-        for code in bundled_codes:
-            match_sec = next(s for s in self.wizard_selections if s["code"] == code)
-            reordered_selections.append(match_sec)
-        self.wizard_selections = reordered_selections
-
-        for s in self.wizard_selections:
-            self.prio_listbox.insert(tk.END, f"{s['code']} — {s['name']} ({s['professor']})")
+        for bundle in self.prio_bundles:
+            if len(bundle) == 1:
+                s = bundle[0]
+                self.prio_listbox.insert(tk.END, f"{s['code']} — {s['name']} ({s['professor']})")
+            else:
+                theory = next((s for s in bundle if s['code'].endswith('L')), bundle[0])
+                lab = next((s for s in bundle if s['code'].endswith('P')), bundle[1])
+                self.prio_listbox.insert(tk.END, f"📦 {theory['code']}+{lab['code']} — {theory['name']} ({theory['professor']})")
             
         btn_pane = tk.Frame(listbox_frame, bg=self.bg_color)
         btn_pane.pack(side="right", fill="y")
         
-        tk.Button(btn_pane, text="▲ Move Up", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=self.move_prio_up).pack(fill="x", pady=2)
-        tk.Button(btn_pane, text="▼ Move Down", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=self.move_prio_down).pack(fill="x", pady=2)
+        tk.Button(btn_pane, text="▲ Move Up", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=self.move_bundle_up).pack(fill="x", pady=2)
+        tk.Button(btn_pane, text="▼ Move Down", font=("Helvetica", 9, "bold"), bg=self.card_color, fg=self.text_color, command=self.move_bundle_down).pack(fill="x", pady=2)
         
         save_btn = tk.Button(self.left_panel, text="💾 Commit Plan to Database File", font=("Helvetica", 11, "bold"), bg=self.accent_color, fg="#11111b", relief="flat", command=self.save_wizard_combo)
         save_btn.pack(fill="x", pady=20)
 
-    def move_prio_up(self):
+    def _build_selection_bundles(self, selections):
+        """Group wizard_selections into bundles of theory+lab pairs or solo."""
+        codes = [s["code"] for s in selections]
+        bundles = []
+        skip = set()
+        for s in selections:
+            if s["code"] in skip:
+                continue
+            lab_code = get_lab_code(s["code"])
+            if lab_code and lab_code in codes:
+                lab_sec = next(x for x in selections if x["code"] == lab_code)
+                bundles.append([s, lab_sec])
+                skip.add(lab_code)
+            else:
+                theory_code = get_theory_code(s["code"])
+                if theory_code and theory_code in codes:
+                    skip.add(s["code"])
+                else:
+                    bundles.append([s])
+        return bundles
+
+    def move_bundle_up(self):
         pos = self.prio_listbox.curselection()
         if not pos or pos[0] == 0: return
         idx = pos[0]
-        
-        # Swap the items
-        self.wizard_selections[idx], self.wizard_selections[idx-1] = self.wizard_selections[idx-1], self.wizard_selections[idx]
-        
-        # Refresh screen to update the layout and enforce bundling logic rules
-        self.render_priority_sorting_interface()
-        
-        # Keep the active selection visual indicator stable
-        new_idx = idx - 1 if idx > 0 else 0
-        self.prio_listbox.selection_set(new_idx)
+        self.prio_bundles[idx], self.prio_bundles[idx-1] = self.prio_bundles[idx-1], self.prio_bundles[idx]
+        # Rebuild listbox
+        text = self.prio_listbox.get(idx)
+        prev_text = self.prio_listbox.get(idx-1)
+        self.prio_listbox.delete(idx)
+        self.prio_listbox.insert(idx, prev_text)
+        self.prio_listbox.delete(idx-1)
+        self.prio_listbox.insert(idx-1, text)
+        self.prio_listbox.selection_set(idx-1)
+        # Sync wizard_selections order
+        self.wizard_selections = [s for bundle in self.prio_bundles for s in bundle]
 
-    def move_prio_down(self):
+    def move_bundle_down(self):
         pos = self.prio_listbox.curselection()
         if not pos or pos[0] == self.prio_listbox.size() - 1: return
         idx = pos[0]
-        
-        # Swap the items
-        self.wizard_selections[idx], self.wizard_selections[idx+1] = self.wizard_selections[idx+1], self.wizard_selections[idx]
-        
-        # Refresh screen to update the layout and enforce bundling logic rules
-        self.render_priority_sorting_interface()
-        
-        # Keep the active selection visual indicator stable
-        new_idx = idx + 1 if idx < self.prio_listbox.size() - 1 else self.prio_listbox.size() - 1
-        self.prio_listbox.selection_set(new_idx)
+        self.prio_bundles[idx], self.prio_bundles[idx+1] = self.prio_bundles[idx+1], self.prio_bundles[idx]
+        text = self.prio_listbox.get(idx)
+        next_text = self.prio_listbox.get(idx+1)
+        self.prio_listbox.delete(idx+1)
+        self.prio_listbox.insert(idx+1, text)
+        self.prio_listbox.delete(idx)
+        self.prio_listbox.insert(idx, next_text)
+        self.prio_listbox.selection_set(idx+1)
+        self.wizard_selections = [s for bundle in self.prio_bundles for s in bundle]
 
     def save_wizard_combo(self):
+        if not self.wizard_selections:
+            messagebox.showwarning("Empty Plan", "No courses selected! Please select at least one course before saving.")
+            return
+
         ordered_codes = [s["code"] for s in self.wizard_selections]
         
         new_id = max([c["id"] for c in self.plans["combos"]], default=0) + 1
@@ -848,9 +950,11 @@ class MasterCounsellingApp:
             tk.Label(self.live_progress_frame, text="No selections confirmed yet. Select options below to begin convergence.", font=("Helvetica", 10, "italic"), fg=self.muted_text, bg=self.bg_color).pack(anchor="w")
         else:
             for idx, sec in enumerate(self.live_locked_sections, 1):
-                timings = get_readable_timings(sec['slots'])
-                t = f"✅ Step {idx}: {sec['code']} ({sec['name']}) — Slots: {sec['slots']} | Timings: {timings} | Professor: {sec['professor']} | [{sec['tt_code']}]"
-                tk.Label(self.live_progress_frame, text=t, font=("Helvetica", 9, "bold"), fg=self.success_color, bg=self.bg_color).pack(anchor="w", pady=1)
+                timings = get_timings_for_slots(sec['slots'], self.slot_timing_map)
+                t = (f"✅ Step {idx}: {sec['code']} ({sec['name']}) — Slots: {sec['slots']} | "
+                     f"Professor: {sec['professor']} | [{sec['tt_code']}]\n"
+                     f"   Timings: {timings}")
+                tk.Label(self.live_progress_frame, text=t, font=("Helvetica", 9, "bold"), fg=self.success_color, bg=self.bg_color, justify="left").pack(anchor="w", pady=1)
 
         next_options = []
         seen_keys = set()
@@ -885,8 +989,10 @@ class MasterCounsellingApp:
             card = tk.Frame(self.live_scroll_frame, bg=self.card_color, bd=1, relief="solid", highlightbackground="#45475a")
             card.pack(fill="x", expand=True, pady=4, padx=10)
             
-            timings = get_readable_timings(opt['slots'])
-            desc_str = f"Course: {opt['code']} — {opt['name']}\nSlots: {opt['slots']:<10} | Timing: {timings}\nProfessor: {opt['professor']}"
+            timings = get_timings_for_slots(opt['slots'], self.slot_timing_map)
+            desc_str = (f"Course: {opt['code']} — {opt['name']}\n"
+                        f"Slots: {opt['slots']:<12} | Professor: {opt['professor']}\n"
+                        f"Timings: {timings}")
             tk.Label(card, text=desc_str, font=("Helvetica", 10, "bold"), bg=self.card_color, fg=self.text_color, justify="left", anchor="w").pack(side="left", padx=15, pady=10)
             
             tk.Label(card, text=f"{weight} paths protect this", font=("Helvetica", 9, "italic"), bg=self.card_color, fg="#cba6f7").pack(side="right", padx=(0, 15))
