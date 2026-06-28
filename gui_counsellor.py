@@ -383,6 +383,13 @@ class MasterCounsellingApp:
         self.combo_label.pack(side="left", padx=10)
         self.btn(nav_frame, "Next >", self.view_next_combo, "muted").pack(side="left", padx=5)
 
+        tk.Label(nav_frame, text="Go to #:", font=("Helvetica", 10), bg=self.surface, fg=self.text2).pack(side="left", padx=(15, 3))
+        self.goto_var = tk.StringVar()
+        self.goto_entry = tk.Entry(nav_frame, textvariable=self.goto_var, width=6, font=("Helvetica", 11))
+        self.goto_entry.pack(side="left", padx=3)
+        self.goto_entry.bind("<Return>", lambda e: self.view_goto_combo())
+        self.btn(nav_frame, "Go", self.view_goto_combo, "primary").pack(side="left", padx=3)
+
         body = tk.Frame(self.tab_view, bg=self.bg)
         body.pack(fill="both", expand=True, padx=16, pady=12)
         _, self.view_scroll_frame, _ = self.scrollable(body)
@@ -398,6 +405,23 @@ class MasterCounsellingApp:
         if self.plans.get("combos") and self.current_view_index < len(self.plans["combos"]) - 1:
             self.current_view_index += 1
             self.refresh_view_tab()
+
+    def view_goto_combo(self):
+        combos = self.plans.get("combos")
+        if not combos:
+            return
+        raw = self.goto_var.get().strip()
+        try:
+            n = int(raw)
+        except ValueError:
+            messagebox.showerror("Invalid Entry", "Please enter a valid combination number.")
+            return
+        total = len(combos)
+        if n < 1 or n > total:
+            messagebox.showerror("Out of Range", f"Enter a number between 1 and {total}.")
+            return
+        self.current_view_index = n - 1
+        self.refresh_view_tab()
 
     def refresh_view_tab(self):
         for w in self.view_scroll_frame.winfo_children(): w.destroy()
@@ -884,9 +908,80 @@ class MasterCounsellingApp:
         self.render_modify_main_view(dlg, combo_id)
 
     def render_replace_section_view(self, dlg, combo_id, target_code):
-        # Implementation hidden to save space as it's not strictly part of requested changes. 
-        # Assume it handles GUI layout to replace a target section within dlg.
-        pass
+        for w in dlg.winfo_children(): w.destroy()
+
+        orig_sec = next((s for s in dlg.working_combo["sections"] if s["code"] == target_code), None)
+        course_name = orig_sec.get("name", target_code) if orig_sec else target_code
+
+        foot = tk.Frame(dlg, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
+        foot.pack(fill="x", side="bottom")
+        self.btn(foot, "< Back", lambda: self.render_modify_main_view(dlg, combo_id), "muted").pack(side="left", padx=10, pady=8)
+
+        tk.Label(dlg, text=f"Change Section — {target_code} ({course_name})",
+                 font=("Helvetica", 14, "bold"), fg=self.text, bg=self.bg).pack(pady=(14, 2), padx=16, anchor="w")
+        tk.Label(dlg, text="Only sections that don't clash with the OTHER courses currently in this plan are shown.",
+                 font=("Helvetica", 10, "italic"), fg=self.text2, bg=self.bg).pack(padx=16, anchor="w")
+
+        body = tk.Frame(dlg, bg=self.bg)
+        body.pack(fill="both", expand=True, padx=14, pady=10)
+        _, scroll, _ = self.scrollable(body)
+
+        # Occupied blocks = every OTHER (non-blank) section currently in the plan
+        other_secs = [s for s in dlg.working_combo["sections"]
+                      if s["code"] != target_code and not s.get("is_blank")]
+        occupied_blocks = set()
+        for s in other_secs:
+            occupied_blocks.update(tuple(b) for b in s["minute_blocks"])
+
+        def _pick(sec_data):
+            for idx, s in enumerate(dlg.working_combo["sections"]):
+                if s["code"] == target_code:
+                    if sec_data is None:
+                        dlg.working_combo["sections"][idx] = {
+                            "code": target_code, "name": course_name, "slots": "—",
+                            "tt_code": "—", "professor": "—", "type": "—",
+                            "minute_blocks": [], "is_blank": True
+                        }
+                    else:
+                        new_sec = copy.deepcopy(sec_data)
+                        new_sec["is_blank"] = False
+                        dlg.working_combo["sections"][idx] = new_sec
+                    break
+            self.render_modify_main_view(dlg, combo_id)
+
+        blank_card = tk.Frame(scroll, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
+        blank_card.pack(fill="x", pady=4, padx=4)
+        tk.Label(blank_card, text=f"{target_code} — [ BLANK — fill in later ]",
+                 font=("Helvetica", 11, "bold"), fg=self.text2, bg=self.surface).pack(side="left", padx=12, pady=10)
+        self.btn(blank_card, "Set Blank", lambda: _pick(None), "muted").pack(side="right", padx=10, pady=10)
+
+        candidates = self.courses_dict.get(target_code, [])
+        valid_sections = [s for s in candidates
+                           if occupied_blocks.isdisjoint(set(tuple(b) for b in s["minute_blocks"]))]
+
+        if not valid_sections:
+            tk.Label(scroll, text="⚠ No clash-free sections available for this course.",
+                     fg=self.danger, bg=self.bg, font=("Helvetica", 11, "italic")).pack(pady=20)
+            return
+
+        for sec in valid_sections:
+            is_current = (orig_sec is not None and not orig_sec.get("is_blank")
+                          and sec["slots"] == orig_sec["slots"] and sec["professor"] == orig_sec["professor"])
+            timings = get_timings_for_slots(sec["slots"], self.slot_timing_map)
+            card = tk.Frame(scroll, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
+            card.pack(fill="x", pady=4, padx=4)
+            info = tk.Frame(card, bg=self.surface)
+            info.pack(side="left", fill="both", expand=True, padx=12, pady=8)
+            label_text = f"Prof: {sec['professor']}   Slots: {sec['slots']}   TT: {sec['tt_code']}"
+            if is_current:
+                label_text += "   (current)"
+            tk.Label(info, text=label_text, font=("Helvetica", 11, "bold"), fg=self.text, bg=self.surface).pack(anchor="w")
+            tk.Label(info, text=timings, font=("Helvetica", 10), fg=self.accent, bg=self.surface,
+                     wraplength=560, justify="left").pack(anchor="w", pady=(2, 0))
+            if is_current:
+                self.btn(card, "Current", lambda: None, "muted").pack(side="right", padx=10, pady=10)
+            else:
+                self.btn(card, "Select", lambda s=sec: _pick(s), "success").pack(side="right", padx=10, pady=10)
 
     def apply_blank_slot(self, dlg, combo_id, target_code):
         for s in dlg.working_combo["sections"]:
@@ -1124,16 +1219,20 @@ class MasterCounsellingApp:
                  fg=self.text, bg=self.surface2).pack(side="left", padx=10, pady=10)
 
         locked_codes = {s["code"] for s in self.live_locked_sections}
-        # Exclude codes already visible as next options in the current tree
-        valid_combos = self._live_get_valid_combos()
-        already_shown = set()
-        for combo in valid_combos:
-            remaining = [c for c in combo["picking_order"] if c not in locked_codes]
-            if remaining:
-                already_shown.add(remaining[0])
 
-        available = [c for c in sorted(self.courses_dict.keys())
-                     if c not in locked_codes and c not in already_shown]
+        # Only factor: does the course have at least one section whose timing
+        # doesn't clash with anything already locked above it in the tree?
+        # Whether the course is already picked elsewhere is irrelevant.
+        occupied_blocks = set()
+        for s in self.live_locked_sections:
+            if not s.get("is_blank"):
+                occupied_blocks.update(tuple(b) for b in s["minute_blocks"])
+
+        available = []
+        for c in sorted(self.courses_dict.keys()):
+            secs = self.courses_dict[c]
+            if any(occupied_blocks.isdisjoint(set(tuple(b) for b in s["minute_blocks"])) for s in secs):
+                available.append(c)
         display_vals = [f"{c} — {self.courses_dict[c][0]['name']}" for c in available]
 
         if not display_vals:
@@ -1156,7 +1255,13 @@ class MasterCounsellingApp:
     def _open_live_section_picker(self, course_code):
         """Dialog to pick a specific section (or blank) before adding to the live tree."""
         sections = self.courses_dict.get(course_code, [])
-        course_name = sections[0]["name"] if sections else course_code
+        occupied_blocks = set()
+        for s in self.live_locked_sections:
+            if not s.get("is_blank"):
+                occupied_blocks.update(tuple(b) for b in s["minute_blocks"])
+        sections = [s for s in sections
+                    if occupied_blocks.isdisjoint(set(tuple(b) for b in s["minute_blocks"]))]
+        course_name = self.courses_dict.get(course_code, [{}])[0].get("name", course_code) if self.courses_dict.get(course_code) else course_code
 
         dlg = tk.Toplevel(self.root)
         dlg.title(f"Pick Section — {course_code}")

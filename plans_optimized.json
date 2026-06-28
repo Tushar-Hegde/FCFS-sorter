@@ -64500,6 +64500,1224 @@
           "s": "E2+TE2"
         }
       }
+    },
+    {
+      "id": 1750,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE403E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L3+L4"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE403E": {
+          "p": "SASIKUMAR P",
+          "s": "L15+L16"
+        }
+      }
+    },
+    {
+      "id": 1751,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "ASWATHI V",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "ASWATHI V",
+          "s": "L15+L16"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1752,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1753,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1754,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1755,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1756,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "CHRISTINA JOSEPHINE MALATHI A",
+          "s": "L29+L30"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L19+L20"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1757,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1758,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1759,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L29+L30"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1760,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L19+L20"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1761,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1762,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1763,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "ASWATHI V",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "ASWATHI V",
+          "s": "L15+L16"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1764,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L23+L24"
+        },
+        "BECE306L": {
+          "p": "ASWATHI V",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "ASWATHI V",
+          "s": "L9+L10"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1765,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L7+L8"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1766,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L7+L8"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1767,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L7+L8"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L19+L20"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1768,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L7+L8"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L29+L30"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1769,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "SANDHANA MAHALINGAM M",
+          "s": "L7+L8"
+        },
+        "BECE306L": {
+          "p": "ASWATHI V",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "ASWATHI V",
+          "s": "L15+L16"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1770,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1771,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1772,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1773,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "VELMURUGAN T",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VELMURUGAN T",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1774,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L19+L20"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1775,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "SARAVANAN K",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "SARAVANAN K",
+          "s": "L29+L30"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1776,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L15+L16"
+        },
+        "BECE306L": {
+          "p": "ASWATHI V",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "ASWATHI V",
+          "s": "L9+L10"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1777,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L5+L6"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L7+L8"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
+    },
+    {
+      "id": 1778,
+      "order": [
+        "BECE303L",
+        "BECE303P",
+        "BECE305L",
+        "BECE305P",
+        "BECE306L",
+        "BECE306P",
+        "BECE409E"
+      ],
+      "secs": {
+        "BECE303L": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "B2+TB2"
+        },
+        "BECE303P": {
+          "p": "VIKAS VIJAYVARGIYA",
+          "s": "L11+L12"
+        },
+        "BECE305L": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "C2+TC2"
+        },
+        "BECE305P": {
+          "p": "DILIP KUMAR CHOUDHARY",
+          "s": "L5+L6"
+        },
+        "BECE306L": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "D2+TD2"
+        },
+        "BECE306P": {
+          "p": "VIJAYA DURGA CHINTALA",
+          "s": "L21+L22"
+        },
+        "BECE409E": {
+          "p": "MUTHU RAJA S",
+          "s": "L3+L4"
+        }
+      }
     }
   ],
   "live_orders": {
@@ -64511,23 +65729,18 @@
       ],
       [
         "BECE303L",
-        "ANIL KUMAR RAJPUT",
+        "ANTONY XAVIER GLITTAS X",
         "B2+TB2"
       ],
       [
         "BECE303L",
-        "ANTONY XAVIER GLITTAS X",
+        "ANIL KUMAR RAJPUT",
         "B2+TB2"
       ],
       [
         "BECE303L",
         "AARTHY M",
         "B2+TB2"
-      ],
-      [
-        "BECE208E",
-        "\u2014",
-        "\u2014"
       ]
     ],
     "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2": [
@@ -64545,6 +65758,1090 @@
         "BECE208E",
         "\u2014",
         "\u2014"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2": [
+      [
+        "BECE306P",
+        "VIJAYA DURGA CHINTALA",
+        "L21+L22"
+      ],
+      [
+        "BECE306P",
+        "VIJAYA DURGA CHINTALA",
+        "L7+L8"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L19+L20": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L29+L30": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:SARAVANAN K,D2+TD2": [
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L29+L30"
+      ],
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L19+L20"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L9+L10": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4|BECE306L:ASWATHI V,D2+TD2": [
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L15+L16"
+      ],
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L9+L10"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L3+L4": [
+      [
+        "BECE306L",
+        "SARAVANAN K",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VIJAYA DURGA CHINTALA",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VELMURUGAN T",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "ASWATHI V",
+        "D2+TD2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L19+L20": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:ASWATHI V,D2+TD2": [
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L15+L16"
+      ],
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L9+L10"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L15+L16": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:CHRISTINA JOSEPHINE MALATHI A,C2+TC2|BECE305P:CHRISTINA JOSEPHINE MALATHI A,L29+L30": [
+      [
+        "BECE306L",
+        "VIJAYA DURGA CHINTALA",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VELMURUGAN T",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "ASWATHI V",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "SARAVANAN K",
+        "D2+TD2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2": [
+      [
+        "BECE306P",
+        "VIJAYA DURGA CHINTALA",
+        "L7+L8"
+      ],
+      [
+        "BECE306P",
+        "VIJAYA DURGA CHINTALA",
+        "L21+L22"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:SARAVANAN K,D2+TD2": [
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L29+L30"
+      ],
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L19+L20"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L29+L30": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24": [
+      [
+        "BECE306L",
+        "SARAVANAN K",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VIJAYA DURGA CHINTALA",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VELMURUGAN T",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "ASWATHI V",
+        "D2+TD2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L19+L20": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:ASWATHI V,D2+TD2": [
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L15+L16"
+      ],
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L9+L10"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L15+L16": [
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L23+L24|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L9+L10": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L19+L20": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:SARAVANAN K,D2+TD2": [
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L29+L30"
+      ],
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L19+L20"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L29+L30": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8": [
+      [
+        "BECE306L",
+        "SARAVANAN K",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "ASWATHI V",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VIJAYA DURGA CHINTALA",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VELMURUGAN T",
+        "D2+TD2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:ASWATHI V,D2+TD2": [
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L15+L16"
+      ],
+      [
+        "BECE306P",
+        "ASWATHI V",
+        "L9+L10"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:SANDHANA MAHALINGAM M,C2+TC2|BECE305P:SANDHANA MAHALINGAM M,L7+L8|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L15+L16": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12": [
+      [
+        "BECE305L",
+        "CHRISTINA JOSEPHINE MALATHI A",
+        "C2+TC2"
+      ],
+      [
+        "BECE305L",
+        "DILIP KUMAR CHOUDHARY",
+        "C2+TC2"
+      ],
+      [
+        "BECE305L",
+        "SANDHANA MAHALINGAM M",
+        "C2+TC2"
+      ],
+      [
+        "BECE305L",
+        "RAJESH N",
+        "C2+TC2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L21+L22": [
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:VELMURUGAN T,D2+TD2|BECE306P:VELMURUGAN T,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L19+L20": [
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:SARAVANAN K,D2+TD2|BECE306P:SARAVANAN K,L29+L30": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:SARAVANAN K,D2+TD2": [
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L29+L30"
+      ],
+      [
+        "BECE306P",
+        "SARAVANAN K",
+        "L19+L20"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16|BECE306L:ASWATHI V,D2+TD2|BECE306P:ASWATHI V,L9+L10": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L15+L16": [
+      [
+        "BECE306L",
+        "SARAVANAN K",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VIJAYA DURGA CHINTALA",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "VELMURUGAN T",
+        "D2+TD2"
+      ],
+      [
+        "BECE306L",
+        "ASWATHI V",
+        "D2+TD2"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2": [
+      [
+        "BECE305P",
+        "DILIP KUMAR CHOUDHARY",
+        "L5+L6"
+      ],
+      [
+        "BECE305P",
+        "DILIP KUMAR CHOUDHARY",
+        "L15+L16"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L5+L6|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L21+L22": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ]
+    ],
+    "BECE303L:VIKAS VIJAYVARGIYA,B2+TB2|BECE303P:VIKAS VIJAYVARGIYA,L11+L12|BECE305L:DILIP KUMAR CHOUDHARY,C2+TC2|BECE305P:DILIP KUMAR CHOUDHARY,L5+L6|BECE306L:VIJAYA DURGA CHINTALA,D2+TD2|BECE306P:VIJAYA DURGA CHINTALA,L7+L8": [
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L15+L16"
+      ],
+      [
+        "BECE403E",
+        "SASIKUMAR P",
+        "L23+L24"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L27+L28"
+      ],
+      [
+        "BECE409E",
+        "MUTHU RAJA S",
+        "L3+L4"
+      ],
+      [
+        "BECE309L",
+        "MANISH KUMAR",
+        "E2+TE2"
       ]
     ]
   }
