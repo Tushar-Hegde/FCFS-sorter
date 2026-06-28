@@ -1108,6 +1108,7 @@ class MasterCounsellingApp:
             self.badge(right_col, f"{weight} plan{'s' if weight != 1 else ''}", "info").pack(pady=(0, 6))
             self.btn(right_col, "Secure", lambda t=opt: self.live_handle_select(t), "success").pack()
             self.btn(right_col, "Branch", lambda t=opt: self.live_structural_branch(t), "purple").pack(pady=(6, 0))
+            self.btn(right_col, "Delete Branch", lambda t=opt: self.live_delete_branch(t), "danger").pack(pady=(6, 0))
             arrow_row = tk.Frame(right_col, bg=self.surface)
             arrow_row.pack(pady=(6, 0))
             self.btn(arrow_row, "^", lambda i=idx: self._live_move_option(i, -1), "muted").pack(side="left", padx=2)
@@ -1297,6 +1298,50 @@ class MasterCounsellingApp:
             self.open_structural_batch_dialog(match_id)
         else:
             messagebox.showerror("Error", "No saved combination containing this configuration to branch from.")
+
+    def live_delete_branch(self, sec):
+        locked_codes_set = {s["code"] for s in self.live_locked_sections}
+        valid_combos = self._live_get_valid_combos()
+
+        to_delete = []
+        for combo in valid_combos:
+            remaining = [c for c in combo["picking_order"] if c not in locked_codes_set]
+            if not remaining or remaining[0] != sec["code"]:
+                continue
+            match_sec = next((s for s in combo["sections"] if s["code"] == sec["code"]), None)
+            if not match_sec:
+                continue
+            if sec.get("is_blank"):
+                if match_sec.get("is_blank"):
+                    to_delete.append(combo)
+            else:
+                if (not match_sec.get("is_blank") and
+                        match_sec.get("professor") == sec.get("professor") and
+                        match_sec.get("slots") == sec.get("slots")):
+                    to_delete.append(combo)
+
+        if not to_delete:
+            messagebox.showinfo("Nothing to delete", "No combinations found for this branch.")
+            return
+
+        parts = [s["code"] for s in self.live_locked_sections] + [sec["code"]]
+        path_str = " > ".join(parts)
+        ids_str = ", ".join(str(c["id"]) for c in to_delete)
+
+        msg1 = ("This will permanently delete %d combination(s) rooted at:\n\n"
+                "  %s\n\nAll downstream leaves will also be removed. Continue?") % (len(to_delete), path_str)
+        if not messagebox.askyesno("Delete Branch - Step 1 of 2", msg1):
+            return
+
+        msg2 = ("Are you absolutely sure?\n\n"
+                "Combination ID(s) to be deleted: %s\n\nThis cannot be undone.") % ids_str
+        if not messagebox.askyesno("Delete Branch - Step 2 of 2 (Final Confirmation)", msg2):
+            return
+
+        delete_ids = {c["id"] for c in to_delete}
+        self.plans["combos"] = [c for c in self.plans["combos"] if c["id"] not in delete_ids]
+        save_plans(self.plans)
+        self.refresh_live_tree()
 
 if __name__ == "__main__":
     root = tk.Tk()

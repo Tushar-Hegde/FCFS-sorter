@@ -1,50 +1,6 @@
 {
   "combos": [
     {
-      "id": 4,
-      "order": [
-        "BECE208E",
-        "BECE303L",
-        "BECE303P",
-        "BECE305L",
-        "BECE305P",
-        "BECE306L",
-        "BECE306P",
-        "BECE403E"
-      ],
-      "secs": {
-        "BECE208E": null,
-        "BECE303L": {
-          "p": "VIKAS VIJAYVARGIYA",
-          "s": "B2+TB2"
-        },
-        "BECE303P": {
-          "p": "VIKAS VIJAYVARGIYA",
-          "s": "L11+L12"
-        },
-        "BECE305L": {
-          "p": "CHRISTINA JOSEPHINE MALATHI A",
-          "s": "C2+TC2"
-        },
-        "BECE305P": {
-          "p": "CHRISTINA JOSEPHINE MALATHI A",
-          "s": "L3+L4"
-        },
-        "BECE306L": {
-          "p": "VIJAYA DURGA CHINTALA",
-          "s": "D2+TD2"
-        },
-        "BECE306P": {
-          "p": "VIJAYA DURGA CHINTALA",
-          "s": "L21+L22"
-        },
-        "BECE403E": {
-          "p": "SASIKUMAR P",
-          "s": "L15+L16"
-        }
-      }
-    },
-    {
       "id": 5,
       "order": [
         "BECE303L",
@@ -64542,20 +64498,6 @@
         "BECE309L": {
           "p": "MANISH KUMAR",
           "s": "E2+TE2"
-        }
-      }
-    },
-    {
-      "id": 1750,
-      "order": [
-        "BECE208E",
-        "BECE305L"
-      ],
-      "secs": {
-        "BECE208E": null,
-        "BECE305L": {
-          "p": "RAJESH N",
-          "s": "C2+TC2"
         }
       }
     }
