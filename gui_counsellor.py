@@ -122,16 +122,87 @@ def load_courses_from_csv(input_filename="CourseList.csv"):
             courses_dict.setdefault(course_code, []).append(section_data)
     return courses_dict
 
-def load_plans(filename="plans.json"):
-    if os.path.exists(filename):
-        with open(filename, 'r', encoding='utf-8') as f:
-            try: return json.load(f)
-            except json.JSONDecodeError: return {"combos": []}
-    return {"combos": []}
+# ── Optimized plans.json format ────────────────────────────────────────────
+# Each combo: {"id": int, "order": [code,...], "secs": {code: {"p":prof,"s":slots} | null}}
+# null  = blank slot.  name/type/tt_code/minute_blocks are derived at load time.
 
-def save_plans(plans, filename="plans.json"):
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(plans, f, indent=4)
+def _slim_sec(sec):
+    """Fat section dict -> slim storage form."""
+    if sec.get("is_blank"):
+        return None
+    return {"p": sec["professor"], "s": sec["slots"]}
+
+def _fatten_sec(code, slim, courses_dict):
+    """Slim storage form -> fat section dict the app uses internally."""
+    if slim is None:
+        secs = courses_dict.get(code, [])
+        name = secs[0]["name"] if secs else code
+        return {"code": code, "name": name, "slots": "—", "tt_code": "—",
+                "professor": "—", "type": "—", "minute_blocks": [], "is_blank": True}
+    candidates = courses_dict.get(code, [])
+    match = next((s for s in candidates
+                  if s["professor"] == slim["p"] and s["slots"] == slim["s"]), None)
+    if match:
+        return dict(match, is_blank=False)
+    name = candidates[0]["name"] if candidates else code
+    return {"code": code, "name": name, "slots": slim["s"], "tt_code": "—",
+            "professor": slim["p"], "type": "—", "minute_blocks": [], "is_blank": False}
+
+def load_plans(filename="plans_optimized.json", courses_dict=None):
+    if not os.path.exists(filename):
+        # fall back to legacy plans.json once, then migrate
+        if os.path.exists("plans.json"):
+            with open("plans.json", encoding="utf-8") as f:
+                try:
+                    fat = json.load(f)
+                except json.JSONDecodeError:
+                    return {"combos": []}
+            # migrate and save optimized
+            slim_combos = []
+            for c in fat.get("combos", []):
+                slim_combos.append({
+                    "id": c["id"],
+                    "order": c["picking_order"],
+                    "secs": {s["code"]: _slim_sec(s) for s in c["sections"]}
+                })
+            out = {"combos": slim_combos}
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(out, f, indent=2)
+            # fatten and return
+            cd = courses_dict or {}
+            return _fatten_plans(out, cd)
+        return {"combos": []}
+    with open(filename, encoding="utf-8") as f:
+        try:
+            slim = json.load(f)
+        except json.JSONDecodeError:
+            return {"combos": []}
+    return _fatten_plans(slim, courses_dict or {})
+
+def _fatten_plans(slim, courses_dict):
+    combos = []
+    for c in slim.get("combos", []):
+        order = c["order"]
+        sections = [_fatten_sec(code, c["secs"].get(code), courses_dict) for code in order]
+        combos.append({"id": c["id"], "picking_order": order, "sections": sections})
+    out = {"combos": combos}
+    if slim.get("live_orders"):
+        out["live_orders"] = slim["live_orders"]
+    return out
+
+def save_plans(plans, filename="plans_optimized.json"):
+    slim_combos = []
+    for c in plans.get("combos", []):
+        slim_combos.append({
+            "id": c["id"],
+            "order": c["picking_order"],
+            "secs": {s["code"]: _slim_sec(s) for s in c["sections"]}
+        })
+    out = {"combos": slim_combos}
+    if plans.get("live_orders"):
+        out["live_orders"] = plans["live_orders"]
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(out, f, indent=2)
 
 def get_theory_code(code):
     if code.endswith('P'):
@@ -156,7 +227,7 @@ class MasterCounsellingApp:
         self.root.minsize(1050, 700)
 
         self.courses_dict = load_courses_from_csv("CourseList.csv")
-        self.plans = load_plans("plans.json")
+        self.plans = load_plans("plans_optimized.json", self.courses_dict)
         self.slot_timing_map = generate_slot_timing_map()
 
         if not self.courses_dict:
@@ -207,9 +278,9 @@ class MasterCounsellingApp:
         self.tab_build = tk.Frame(self.notebook, bg=self.bg)
         self.tab_live  = tk.Frame(self.notebook, bg=self.bg)
 
-        self.notebook.add(self.tab_view,  text="  📂  Saved Combinations  ")
-        self.notebook.add(self.tab_build, text="  🔨  Create New Plan  ")
-        self.notebook.add(self.tab_live,  text="  ⚡  Live Tracker  ")
+        self.notebook.add(self.tab_view,  text="    Saved Combinations  ")
+        self.notebook.add(self.tab_build, text="    Create New Plan  ")
+        self.notebook.add(self.tab_live,  text="    Live Tracker  ")
 
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
 
@@ -269,14 +340,14 @@ class MasterCounsellingApp:
                  font=("Helvetica", 12, "bold"), fg=self.text, bg=bg).pack(anchor="w")
         row = tk.Frame(parent, bg=bg)
         row.pack(anchor="w", fill="x")
-        tk.Label(row, text=f"👤 {sec['professor']}",
+        tk.Label(row, text=f"Prof: {sec['professor']}",
                  font=("Helvetica", 11), fg=self.text2, bg=bg).pack(side="left", padx=(0,12))
-        tk.Label(row, text=f"🗓 Slots: {sec['slots']}",
+        tk.Label(row, text=f"Slots: Slots: {sec['slots']}",
                  font=("Helvetica", 11), fg=self.text2, bg=bg).pack(side="left", padx=(0,12))
-        tk.Label(row, text=f"📋 {sec['tt_code']}",
+        tk.Label(row, text=f"TT: {sec['tt_code']}",
                  font=("Helvetica", 11), fg=self.text2, bg=bg).pack(side="left")
         if not compact:
-            tk.Label(parent, text=f"🕐 {timings}",
+            tk.Label(parent, text=f"Times: {timings}",
                      font=("Helvetica", 11), fg=self.accent, bg=bg,
                      wraplength=600, justify="left").pack(anchor="w", pady=(2,0))
 
@@ -302,15 +373,15 @@ class MasterCounsellingApp:
                  
         # Navigation and Duplicate Removal Controls
         if hasattr(self, 'remove_duplicates'):
-            self.btn(hdr, "🧹 Remove Duplicates", self.remove_duplicates, "warn").pack(side="right", padx=20, pady=12)
+            self.btn(hdr, " Remove Duplicates", self.remove_duplicates, "warn").pack(side="right", padx=20, pady=12)
 
         nav_frame = tk.Frame(hdr, bg=self.surface)
         nav_frame.pack(side="right", padx=20, pady=12)
         
-        self.btn(nav_frame, "◀ Prev", self.view_prev_combo, "muted").pack(side="left", padx=5)
+        self.btn(nav_frame, "< Prev", self.view_prev_combo, "muted").pack(side="left", padx=5)
         self.combo_label = tk.Label(nav_frame, text="", font=("Helvetica", 11, "bold"), bg=self.surface, fg=self.text)
         self.combo_label.pack(side="left", padx=10)
-        self.btn(nav_frame, "Next ▶", self.view_next_combo, "muted").pack(side="left", padx=5)
+        self.btn(nav_frame, "Next >", self.view_next_combo, "muted").pack(side="left", padx=5)
 
         body = tk.Frame(self.tab_view, bg=self.bg)
         body.pack(fill="both", expand=True, padx=16, pady=12)
@@ -330,7 +401,7 @@ class MasterCounsellingApp:
 
     def refresh_view_tab(self):
         for w in self.view_scroll_frame.winfo_children(): w.destroy()
-        self.plans = load_plans("plans.json")
+        self.plans = load_plans("plans_optimized.json", self.courses_dict)
 
         if not self.plans.get("combos"):
             self.combo_label.config(text="0 / 0")
@@ -379,24 +450,24 @@ class MasterCounsellingApp:
                      font=("Helvetica", 11, "bold"), fg=self.text, bg=row_bg,
                      anchor="w").pack(anchor="w")
             tk.Label(info,
-                     text=f"👤 {sec['professor']}   🗓 {sec['slots']}   📋 {sec['tt_code']}",
+                     text=f"Prof: {sec['professor']}   Slots: {sec['slots']}   TT: {sec['tt_code']}",
                      font=("Helvetica", 10), fg=self.text2, bg=row_bg,
                      anchor="w").pack(anchor="w")
-            tk.Label(info, text=f"🕐 {timings}",
+            tk.Label(info, text=f"Times: {timings}",
                      font=("Helvetica", 10), fg=self.accent, bg=row_bg,
                      anchor="w", wraplength=700, justify="left").pack(anchor="w")
 
         brow = tk.Frame(card, bg=self.surface)
         brow.pack(fill="x", padx=14, pady=(6, 10))
-        self.btn(brow, "🌿 Branch", lambda cid=combo['id']: self.branch_combo(cid),
+        self.btn(brow, " Branch", lambda cid=combo['id']: self.branch_combo(cid),
                  "success").pack(side="left", padx=(0,6))
         
-        self.btn(brow, "🔱 Structural Batch Branch", lambda cid=combo['id']: self.open_structural_batch_dialog(cid),
+        self.btn(brow, " Structural Batch Branch", lambda cid=combo['id']: self.open_structural_batch_dialog(cid),
                  "purple").pack(side="left", padx=(0,6))
                  
-        self.btn(brow, "✏️ Modify", lambda cid=combo['id']: self.open_modify_dialog(cid),
+        self.btn(brow, " Modify", lambda cid=combo['id']: self.open_modify_dialog(cid),
                  "primary").pack(side="left", padx=(0,6))
-        self.btn(brow, "🗑 Delete", lambda cid=combo['id']: self.delete_combo(cid),
+        self.btn(brow, " Delete", lambda cid=combo['id']: self.delete_combo(cid),
                  "danger").pack(side="right")
         
     def remove_duplicates(self):
@@ -449,7 +520,7 @@ class MasterCounsellingApp:
         dlg.configure(bg=self.bg)
         dlg.grab_set()
 
-        tk.Label(dlg, text="🔱 Structural Batch Path Branching", font=("Helvetica", 14, "bold"), fg=self.text, bg=self.bg).pack(pady=10)
+        tk.Label(dlg, text=" Structural Batch Path Branching", font=("Helvetica", 14, "bold"), fg=self.text, bg=self.bg).pack(pady=10)
         tk.Label(dlg, text="Select the targeted course component you want to swap out across all shared tree paths:", font=("Helvetica", 11), fg=self.text2, bg=self.bg).pack(pady=2)
 
         f1 = tk.Frame(dlg, bg=self.bg)
@@ -539,7 +610,7 @@ class MasterCounsellingApp:
                     timings = get_timings_for_slots(sec['slots'], self.slot_timing_map)
                     
                     tk.Label(info_col, text=info_text, font=("Helvetica", 11, "bold"), bg=self.surface, fg=self.text).pack(anchor="w")
-                    tk.Label(info_col, text=f"🕐 {timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w", pady=(2, 0))
+                    tk.Label(info_col, text=f"Times: {timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w", pady=(2, 0))
                     
                     self.btn(card, "Execute Batch Branch", lambda chosen_sec=sec: execute_structural_swap(t_code, dest_code, chosen_sec, t_lab_code if t_has_lab else None, None, None), "success").pack(side="right", padx=10)
 
@@ -581,10 +652,10 @@ class MasterCounsellingApp:
                     l_timings = get_timings_for_slots(s_l['slots'], self.slot_timing_map)
 
                     tk.Label(info_col, text=f"Theory: Prof {s_t['professor']} | Slots {s_t['slots']}", font=("Helvetica", 11, "bold"), fg=self.text, bg=self.surface).pack(anchor="w")
-                    tk.Label(info_col, text=f"🕐 {t_timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w")
+                    tk.Label(info_col, text=f"Times: {t_timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w")
                     
                     tk.Label(info_col, text=f"Lab: Prof {s_l['professor']} | Slots {s_l['slots']}", font=("Helvetica", 11, "bold"), fg=self.text2, bg=self.surface).pack(anchor="w", pady=(6,0))
-                    tk.Label(info_col, text=f"🕐 {l_timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w")
+                    tk.Label(info_col, text=f"Times: {l_timings}", font=("Helvetica", 10), fg=self.accent, bg=self.surface, wraplength=550, justify="left").pack(anchor="w")
 
                     self.btn(card, "Execute Paired Branch", lambda ct=s_t, cl=s_l: execute_structural_swap(t_code, dest_code, ct, t_lab_code, d_lab_code, cl), "success").pack(side="right", padx=10)
 
@@ -682,10 +753,10 @@ class MasterCounsellingApp:
         foot = tk.Frame(dlg, bg=self.surface,
                         highlightbackground=self.border, highlightthickness=1)
         foot.pack(fill="x", side="bottom")
-        self.btn(foot, "💾 Save Changes",
+        self.btn(foot, " Save Changes",
                  lambda: self.save_dialog_modifications(dlg, combo_id),
                  "success").pack(side="right", padx=10, pady=8)
-        self.btn(foot, "✕ Discard & Close", dlg.destroy, "danger").pack(side="right", pady=8)
+        self.btn(foot, "X Discard & Close", dlg.destroy, "danger").pack(side="right", pady=8)
 
         body = tk.Frame(dlg, bg=self.bg)
         body.pack(fill="both", expand=True, padx=14, pady=12)
@@ -716,7 +787,7 @@ class MasterCounsellingApp:
                 code = add_cb.get().split(" — ")[0].strip()
                 self.add_course_to_combo(dlg, combo_id, code)
                 
-            self.btn(add_frame, "➕ Add", _on_add, "success").pack(side="left")
+            self.btn(add_frame, "+ Add", _on_add, "success").pack(side="left")
 
         _, scroll_content, _ = self.scrollable(left)
 
@@ -734,7 +805,7 @@ class MasterCounsellingApp:
             self.btn(btns, "Change Section", lambda tc=code: self.render_replace_section_view(dlg, combo_id, tc), "primary").pack(fill="x", pady=2)
             if not sec.get("is_blank"):
                 self.btn(btns, "Make Blank", lambda tc=code: self.apply_blank_slot(dlg, combo_id, tc), "muted").pack(fill="x", pady=2)
-            self.btn(btns, "🗑 Remove", lambda tc=code: self.remove_course_from_combo(dlg, combo_id, tc), "danger").pack(fill="x", pady=2)
+            self.btn(btns, " Remove", lambda tc=code: self.remove_course_from_combo(dlg, combo_id, tc), "danger").pack(fill="x", pady=2)
 
         right = tk.LabelFrame(body, text=" Picking Order ", font=("Helvetica", 12, "bold"), fg=self.text, bg=self.bg, relief="flat", highlightbackground=self.border, highlightthickness=1, width=300)
         right.pack(side="right", fill="both", padx=(8, 0))
@@ -757,7 +828,7 @@ class MasterCounsellingApp:
                 p_code = next((c for c in bundle if c.endswith('P')), bundle[1])
                 t_sec = next((s for s in dlg.working_combo["sections"] if s["code"] == t_code), None)
                 if t_sec:
-                    lb.insert(tk.END, f" 📦 {t_code}+{p_code} ({t_sec['professor']})")
+                    lb.insert(tk.END, f"  {t_code}+{p_code} ({t_sec['professor']})")
                     
         bpane = tk.Frame(right, bg=self.bg)
         bpane.pack(side="right", fill="y", pady=8, padx=6)
@@ -853,8 +924,8 @@ class MasterCounsellingApp:
         self.build_cb.pack(side="left", padx=10)
         if display_vals: self.build_cb.set(display_vals[0])
 
-        self.btn(self.build_controls, "➕ Add Blank Slot", self.build_add_course, "success").pack(side="left")
-        self.btn(self.build_controls, "💾 Save Plan", self.build_save_plan, "primary").pack(side="right")
+        self.btn(self.build_controls, "+ Add Blank Slot", self.build_add_course, "success").pack(side="left")
+        self.btn(self.build_controls, " Save Plan", self.build_save_plan, "primary").pack(side="right")
 
         _, self.build_scroll_frame, _ = self.scrollable(body)
         self.new_plan_picking_order = []
@@ -895,7 +966,7 @@ class MasterCounsellingApp:
             lbl = tk.Label(card, text=f"{idx+1}. {code} — {sec.get('name', '')} [BLANK]", font=("Helvetica", 11, "bold"), bg=self.surface, fg=self.text)
             lbl.pack(side="left", padx=10, pady=10)
             
-            self.btn(card, "🗑 Remove", lambda c=code: self.build_remove_course(c), "danger").pack(side="right", padx=10, pady=10)
+            self.btn(card, " Remove", lambda c=code: self.build_remove_course(c), "danger").pack(side="right", padx=10, pady=10)
 
     def build_save_plan(self):
         if not self.new_plan_picking_order:
@@ -921,72 +992,72 @@ class MasterCounsellingApp:
             self.refresh_build_list()
     
     def setup_live_tab(self):
-        # Initializing the Live Tab
         self.live_locked_sections = []
+        self.live_option_order = []  # user-defined display order (list of sigs)
         body = tk.Frame(self.tab_live, bg=self.bg)
         body.pack(fill="both", expand=True, padx=16, pady=12)
         _, self.live_scroll_frame, _ = self.scrollable(body)
 
     def initialize_live_mode(self):
         self.live_locked_sections = []
+        self.live_option_order = []  # will be loaded per-path in refresh_live_tree
         self.refresh_live_tree()
 
     def live_handle_back(self):
         if self.live_locked_sections:
             self.live_locked_sections.pop()
+            self.live_option_order = []  # will reload from saved order for new path
             self.refresh_live_tree()
 
-    def refresh_live_tree(self):
-        for w in self.live_scroll_frame.winfo_children(): w.destroy()
-
-        # 1. Filter valid combinations based on currently locked sections
+    def _live_get_valid_combos(self):
         valid_combos = []
         for combo in self.plans.get("combos", []):
             is_valid = True
             for locked_sec in self.live_locked_sections:
                 match = next((s for s in combo["sections"] if s["code"] == locked_sec["code"]), None)
                 if not match or match.get("is_blank", False) != locked_sec.get("is_blank", False):
-                    is_valid = False
-                    break
+                    is_valid = False; break
                 if not match.get("is_blank"):
                     if match["professor"] != locked_sec["professor"] or match["slots"] != locked_sec["slots"]:
-                        is_valid = False
-                        break
+                        is_valid = False; break
             if is_valid:
                 valid_combos.append(combo)
+        return valid_combos
 
-        # 2. Render Header and Locked Path (NOW INCLUDES "GO BACK" BUTTON)
+    def refresh_live_tree(self):
+        for w in self.live_scroll_frame.winfo_children(): w.destroy()
+        valid_combos = self._live_get_valid_combos()
+
         hdr_frame = tk.Frame(self.live_scroll_frame, bg=self.bg)
         hdr_frame.pack(fill="x", pady=(10, 20), padx=12)
-        tk.Label(hdr_frame, text="Live Course Selection Tracker", font=("Helvetica", 14, "bold"), fg=self.text, bg=self.bg).pack(side="left")
-        
+        tk.Label(hdr_frame, text="Live Course Selection Tracker",
+                 font=("Helvetica", 14, "bold"), fg=self.text, bg=self.bg).pack(side="left")
+
         if self.live_locked_sections:
-            self.btn(hdr_frame, "↺ Reset Tracker", self.initialize_live_mode, "danger").pack(side="right", padx=(10, 0))
-            self.btn(hdr_frame, "◀ Go Back", self.live_handle_back, "warn").pack(side="right")
-            
-            path_frame = tk.LabelFrame(self.live_scroll_frame, text=" Locked Path ", font=("Helvetica", 11, "bold"), fg=self.success, bg=self.bg)
+            self.btn(hdr_frame, "Reset Tracker", self.initialize_live_mode, "danger").pack(side="right", padx=(10, 0))
+            self.btn(hdr_frame, "< Go Back", self.live_handle_back, "warn").pack(side="right")
+            path_frame = tk.LabelFrame(self.live_scroll_frame, text=" Locked Path ",
+                                       font=("Helvetica", 11, "bold"), fg=self.success, bg=self.bg)
             path_frame.pack(fill="x", padx=12, pady=(0, 20))
             for i, sec in enumerate(self.live_locked_sections, 1):
                 prof_slot = "BLANK" if sec.get("is_blank") else f"{sec['professor']} - {sec['slots']}"
-                tk.Label(path_frame, text=f"{i}. {sec['code']} ({prof_slot})", font=("Helvetica", 10), fg=self.text, bg=self.bg).pack(anchor="w", padx=10, pady=2)
+                tk.Label(path_frame, text=f"{i}. {sec['code']} ({prof_slot})",
+                         font=("Helvetica", 10), fg=self.text, bg=self.bg).pack(anchor="w", padx=10, pady=2)
         else:
-            tk.Label(self.live_scroll_frame, text="Select your first course to begin tracking.", font=("Helvetica", 11, "italic"), fg=self.text2, bg=self.bg).pack(pady=10)
+            tk.Label(self.live_scroll_frame,
+                     text="Select your first course to begin tracking.",
+                     font=("Helvetica", 11, "italic"), fg=self.text2, bg=self.bg).pack(pady=10)
 
         if not valid_combos:
-            tk.Label(self.live_scroll_frame, text="No saved combinations match this path.", font=("Helvetica", 11), fg=self.danger, bg=self.bg).pack(pady=20)
+            tk.Label(self.live_scroll_frame, text="No saved combinations match this path.",
+                     font=("Helvetica", 11), fg=self.danger, bg=self.bg).pack(pady=20)
+            self._render_live_add_new_row()
             return
 
-
-        # 3. Determine the next available options in the tree
         options_tally = {}
         for combo in valid_combos:
             locked_codes = {s["code"] for s in self.live_locked_sections}
-            next_code = None
-            for code in combo["picking_order"]:
-                if code not in locked_codes:
-                    next_code = code
-                    break
-            
+            next_code = next((code for code in combo["picking_order"] if code not in locked_codes), None)
             if next_code:
                 sec = next((s for s in combo["sections"] if s["code"] == next_code), None)
                 if sec:
@@ -996,72 +1067,236 @@ class MasterCounsellingApp:
                     options_tally[sig]["weight"] += 1
 
         if not options_tally and self.live_locked_sections:
-            tk.Label(self.live_scroll_frame, text="🎉 Path Complete! All courses in this combination are locked.", font=("Helvetica", 12, "bold"), fg=self.success, bg=self.bg).pack(pady=30)
+            tk.Label(self.live_scroll_frame,
+                     text="Path Complete! All courses in this combination are locked.",
+                     font=("Helvetica", 12, "bold"), fg=self.success, bg=self.bg).pack(pady=30)
+            self._render_live_add_new_row()
             return
 
-        # 4. Render the next available options with UI cards
-        tk.Label(self.live_scroll_frame, text="Next Available Options:", font=("Helvetica", 12, "bold"), fg=self.text, bg=self.bg).pack(anchor="w", padx=12, pady=(0, 10))
+        # Load persisted order for this path (merges saved + any new options)
+        self.live_option_order = self._live_load_order(options_tally)
 
-        sorted_options = sorted(options_tally.values(), key=lambda x: x["weight"], reverse=True)
+        tk.Label(self.live_scroll_frame, text="Next Available Options:",
+                 font=("Helvetica", 12, "bold"), fg=self.text, bg=self.bg).pack(anchor="w", padx=12, pady=(0, 10))
 
-        for opt_data in sorted_options:
+        for idx, sig in enumerate(self.live_option_order):
+            opt_data = options_tally[sig]
             opt = opt_data["sec_data"]
             weight = opt_data["weight"]
-            timings = get_timings_for_slots(opt['slots'], self.slot_timing_map) if not opt.get("is_blank") else "—"
+            timings = get_timings_for_slots(opt["slots"], self.slot_timing_map) if not opt.get("is_blank") else "—"
 
-            card = tk.Frame(self.live_scroll_frame, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
-            card.pack(fill="x", pady=6, padx=12)
+            card = tk.Frame(self.live_scroll_frame, bg=self.surface,
+                            highlightbackground=self.border, highlightthickness=1)
+            card.pack(fill="x", pady=4, padx=12)
 
             info = tk.Frame(card, bg=self.surface)
             info.pack(side="left", fill="both", expand=True, padx=12, pady=10)
-
             tk.Label(info, text=f"{opt['code']} — {opt.get('name', '')}",
-                     font=("Helvetica", 12, "bold"), fg=self.text, bg=self.surface,
-                     anchor="w").pack(anchor="w")
-            
+                     font=("Helvetica", 12, "bold"), fg=self.text, bg=self.surface, anchor="w").pack(anchor="w")
             if opt.get("is_blank"):
-                tk.Label(info, text="[ BLANK SLOT ]", font=("Helvetica", 11, "italic"), fg=self.text2, bg=self.surface).pack(anchor="w")
+                tk.Label(info, text="[ BLANK SLOT ]", font=("Helvetica", 11, "italic"),
+                         fg=self.text2, bg=self.surface).pack(anchor="w")
             else:
-                tk.Label(info, text=f"👤 {opt['professor']}   🗓 {opt['slots']}   📋 {opt['tt_code']}",
-                         font=("Helvetica", 11), fg=self.text2, bg=self.surface,
-                         anchor="w").pack(anchor="w")
-                tk.Label(info, text=f"🕐 {timings}",
-                         font=("Helvetica", 11), fg=self.accent, bg=self.surface,
-                         anchor="w", wraplength=650).pack(anchor="w", pady=(2,0))
+                tk.Label(info,
+                         text=f"Prof: {opt['professor']}   Slots: {opt['slots']}   TT: {opt['tt_code']}",
+                         font=("Helvetica", 11), fg=self.text2, bg=self.surface, anchor="w").pack(anchor="w")
+                tk.Label(info, text=timings, font=("Helvetica", 11), fg=self.accent,
+                         bg=self.surface, anchor="w", wraplength=600).pack(anchor="w", pady=(2, 0))
 
             right_col = tk.Frame(card, bg=self.surface)
             right_col.pack(side="right", padx=12, pady=10)
-            
-            self.badge(right_col, f"{weight} plan{'s' if weight!=1 else ''}", "info").pack(pady=(0,6))
-            
-            self.btn(right_col, "Secure ✓",
-                     lambda t=opt: self.live_handle_select(t),
-                     "success").pack()
-                     
-            self.btn(right_col, "🔱 Branch",
-                     lambda t=opt: self.live_structural_branch(t),
-                     "purple").pack(pady=(6,0))
+            self.badge(right_col, f"{weight} plan{'s' if weight != 1 else ''}", "info").pack(pady=(0, 6))
+            self.btn(right_col, "Secure", lambda t=opt: self.live_handle_select(t), "success").pack()
+            self.btn(right_col, "Branch", lambda t=opt: self.live_structural_branch(t), "purple").pack(pady=(6, 0))
+            arrow_row = tk.Frame(right_col, bg=self.surface)
+            arrow_row.pack(pady=(6, 0))
+            self.btn(arrow_row, "^", lambda i=idx: self._live_move_option(i, -1), "muted").pack(side="left", padx=2)
+            self.btn(arrow_row, "v", lambda i=idx: self._live_move_option(i, 1), "muted").pack(side="left", padx=2)
+
+        self._render_live_add_new_row()
+
+    def _render_live_add_new_row(self):
+        add_frame = tk.Frame(self.live_scroll_frame, bg=self.surface2,
+                             highlightbackground=self.border, highlightthickness=1)
+        add_frame.pack(fill="x", pady=6, padx=12)
+        tk.Label(add_frame, text="Add New Option:", font=("Helvetica", 11, "bold"),
+                 fg=self.text, bg=self.surface2).pack(side="left", padx=10, pady=10)
+
+        locked_codes = {s["code"] for s in self.live_locked_sections}
+        # Exclude codes already visible as next options in the current tree
+        valid_combos = self._live_get_valid_combos()
+        already_shown = set()
+        for combo in valid_combos:
+            remaining = [c for c in combo["picking_order"] if c not in locked_codes]
+            if remaining:
+                already_shown.add(remaining[0])
+
+        available = [c for c in sorted(self.courses_dict.keys())
+                     if c not in locked_codes and c not in already_shown]
+        display_vals = [f"{c} — {self.courses_dict[c][0]['name']}" for c in available]
+
+        if not display_vals:
+            tk.Label(add_frame, text="No more courses available.", font=("Helvetica", 11, "italic"),
+                     fg=self.text2, bg=self.surface2).pack(side="left", pady=10)
+            return
+
+        cb = ttk.Combobox(add_frame, values=display_vals, state="readonly", width=40)
+        cb.pack(side="left", padx=8, pady=10)
+        cb.set(display_vals[0])
+
+        def _do_add():
+            val = cb.get()
+            if not val: return
+            course_code = val.split(" — ")[0].strip()
+            self._open_live_section_picker(course_code)
+
+        self.btn(add_frame, "+ Add", _do_add, "primary").pack(side="left", pady=10)
+
+    def _open_live_section_picker(self, course_code):
+        """Dialog to pick a specific section (or blank) before adding to the live tree."""
+        sections = self.courses_dict.get(course_code, [])
+        course_name = sections[0]["name"] if sections else course_code
+
+        dlg = tk.Toplevel(self.root)
+        dlg.title(f"Pick Section — {course_code}")
+        dlg.geometry("780x500")
+        dlg.configure(bg=self.bg)
+        dlg.grab_set()
+
+        tk.Label(dlg, text=f"Select a section for {course_code} — {course_name}",
+                 font=("Helvetica", 13, "bold"), fg=self.text, bg=self.bg).pack(pady=(14, 4), padx=16, anchor="w")
+        tk.Label(dlg, text="Choose a specific section, or add as Blank (to fill in later).",
+                 font=("Helvetica", 10, "italic"), fg=self.text2, bg=self.bg).pack(padx=16, anchor="w")
+
+        body = tk.Frame(dlg, bg=self.bg)
+        body.pack(fill="both", expand=True, padx=12, pady=8)
+        _, scroll, _ = self.scrollable(body)
+
+        def _pick(sec_data):
+            dlg.destroy()
+            self._live_add_new_option(course_code, sec_data)
+
+        # Blank option first
+        blank_card = tk.Frame(scroll, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
+        blank_card.pack(fill="x", pady=4, padx=4)
+        tk.Label(blank_card, text=f"{course_code} — [ BLANK — fill in later ]",
+                 font=("Helvetica", 11, "bold"), fg=self.text2, bg=self.surface).pack(side="left", padx=12, pady=10)
+        self.btn(blank_card, "Add Blank", lambda: _pick(None), "muted").pack(side="right", padx=10, pady=10)
+
+        for sec in sections:
+            timings = get_timings_for_slots(sec["slots"], self.slot_timing_map)
+            sc = tk.Frame(scroll, bg=self.surface, highlightbackground=self.border, highlightthickness=1)
+            sc.pack(fill="x", pady=4, padx=4)
+            info = tk.Frame(sc, bg=self.surface)
+            info.pack(side="left", fill="both", expand=True, padx=12, pady=8)
+            tk.Label(info, text=f"Prof: {sec['professor']}   Slots: {sec['slots']}   TT: {sec['tt_code']}",
+                     font=("Helvetica", 11, "bold"), fg=self.text, bg=self.surface).pack(anchor="w")
+            tk.Label(info, text=timings, font=("Helvetica", 10), fg=self.accent,
+                     bg=self.surface, wraplength=560, justify="left").pack(anchor="w", pady=(2, 0))
+            self.btn(sc, "Select", lambda s=sec: _pick(s), "success").pack(side="right", padx=10, pady=10)
+
+    def _live_path_key(self):
+        """Stable string key for the current locked path, used to persist option order."""
+        return "|".join(
+            f"{s['code']}:{s.get('professor','')},{s.get('slots','')}"
+            for s in self.live_locked_sections
+        )
+
+    def _live_load_order(self, options_tally):
+        """Load saved option order for current path, merging with live options."""
+        key = self._live_path_key()
+        saved = self.plans.get("live_orders", {}).get(key, [])
+        # saved is list of sigs (stored as lists in JSON, convert to tuples)
+        saved_tuples = [tuple(s) for s in saved]
+        # keep only sigs still valid, append any new ones at end
+        merged = [s for s in saved_tuples if s in options_tally]
+        for sig in options_tally:
+            if sig not in merged:
+                merged.append(sig)
+        return merged
+
+    def _live_save_order(self):
+        """Persist current live_option_order for this path into plans."""
+        key = self._live_path_key()
+        if "live_orders" not in self.plans:
+            self.plans["live_orders"] = {}
+        # Store sigs as lists (JSON-serializable)
+        self.plans["live_orders"][key] = [list(s) for s in self.live_option_order]
+        save_plans(self.plans)
+
+    def _live_move_option(self, idx, direction):
+        new_idx = idx + direction
+        if 0 <= new_idx < len(self.live_option_order):
+            self.live_option_order[idx], self.live_option_order[new_idx] = \
+                self.live_option_order[new_idx], self.live_option_order[idx]
+            self._live_save_order()
+            self.refresh_live_tree()
+
+    def _live_add_new_option(self, new_code, sec_data=None):
+        """
+        Add new_code as the next step after the current locked path.
+        sec_data: a section dict from courses_dict, or None for blank.
+        Strategy: always create a NEW combo = locked path sections + new_code.
+        This avoids inheriting unrelated courses from existing combos.
+        If an identical combo already exists, we skip creation.
+        """
+        locked_codes_list = [s["code"] for s in self.live_locked_sections]
+
+        if sec_data is None:
+            course_name = self.courses_dict[new_code][0]["name"] if new_code in self.courses_dict else new_code
+            new_sec = {
+                "code": new_code, "name": course_name, "slots": "—",
+                "tt_code": "—", "professor": "—", "type": "—", "minute_blocks": [], "is_blank": True
+            }
+        else:
+            new_sec = copy.deepcopy(sec_data)
+            new_sec["is_blank"] = False
+
+        new_order = locked_codes_list + [new_code]
+        new_sections = copy.deepcopy(self.live_locked_sections) + [new_sec]
+
+        # Check if an identical combo already exists (same order + same section sigs)
+        def _sig(s):
+            return (s["code"], s.get("professor", ""), s.get("slots", ""), s.get("is_blank", False))
+
+        new_sigs = tuple(_sig(s) for s in new_sections)
+        for combo in self.plans.get("combos", []):
+            if combo["picking_order"] == new_order:
+                existing_sigs = tuple(_sig(s) for s in combo["sections"]
+                                      if s["code"] in new_order)
+                if existing_sigs == new_sigs:
+                    messagebox.showinfo("Already Exists",
+                                        f"A combination with this exact path already exists.")
+                    return
+
+        new_id = max([c["id"] for c in self.plans.get("combos", [])], default=0) + 1
+        self.plans.setdefault("combos", []).append(
+            {"id": new_id, "picking_order": new_order, "sections": new_sections})
+        save_plans(self.plans)
+
+        prof = new_sec.get("professor", "—") if not new_sec.get("is_blank") else "—"
+        slots = new_sec.get("slots", "—") if not new_sec.get("is_blank") else "—"
+        sig = (new_code, prof, slots)
+        if sig not in self.live_option_order:
+            self.live_option_order.append(sig)
+        self._live_save_order()
+        self.refresh_live_tree()
 
     def live_handle_select(self, sec):
         self.live_locked_sections.append(sec)
+        self.live_option_order = []  # will reload from saved order for new path
         self.refresh_live_tree()
 
     def live_structural_branch(self, sec):
-        # Creates a temp combo ID matching the live locked path and branches it
-        messagebox.showinfo("Live Branch", f"Branching structural paths directly from {sec['code']} configuration!")
-        
-        # Find first saved combination matching this class layout to launch branching
         match_id = None
         for combo in self.plans["combos"]:
             if any(s["code"] == sec["code"] for s in combo["sections"]):
                 match_id = combo["id"]
                 break
-                
         if match_id:
             self.open_structural_batch_dialog(match_id)
         else:
             messagebox.showerror("Error", "No saved combination containing this configuration to branch from.")
-
 
 if __name__ == "__main__":
     root = tk.Tk()
