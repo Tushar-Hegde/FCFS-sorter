@@ -1,54 +1,34 @@
 # Prerequisites and Setup
-Ensure Python 3.x is installed on your system, with all these libraries - csv,os,json,tkinter,copy
+Python 3.x with: csv, os, json, tkinter, copy, shutil (all standard library).
 
-Verify that the file CourseList.csv is present in the same directory as the script. The CSV must contain the following columns in order: Course Name, Course Code, Raw Slots (e.g., A1+TA1), Timetable Code, Professor Name, and Course Type.
+Keep `CourseList.csv` in the same directory as the script. Columns, in order: Course Name, Course Code, Raw Slots (e.g. A1+TA1), Timetable Code, Professor Name, Course Type.
 
-View the CSV file provided to see the required layout.
+Run from that directory:
 
-Run the script using the following command in your terminal (bash) : 
-
-```python gui_counsellor.py```
-or 
 ```python3 gui_counsellor.py```
 
-# 1. Saved Combinations Tab
-This tab acts as the centralized repository for all schedule layouts that have been created or modified.
+Plans are stored in `plans_optimized.json` as a compact tree (shared prefixes and sections are stored once, so even a 40,000-plan tree is well under 1 MB). An older flat-format file is upgraded automatically on first run, and the original is kept as `plans_optimized.json.v1.bak`. Your per-node option ordering (the ^ / v choices) is stored separately in the small `live_orders.json`, so reordering is instant even with a huge tree (old orderings are migrated automatically on first run). The app opens on the **Live Tracker** tab.
 
-Viewing Blueprints: Each entry shows a unique System ID, its specific registration priority sequence, and details for every course slot (including timings and professor assignments).
+# 1. Live Tracker (first tab, opens by default)
+Your working tree. Everything (choosing, adding, branching, deleting, reordering) happens here. Mouse wheel / trackpad scrolls every list.
 
-Modifying Plans : Click the "Modify Plan" button . Specifics written later.
+- **Locked Path + Weekly Timetable:** each locked course is drawn on a Mon-Fri timetable (one colour per course).
+- **Next Available Options:** click an option card to highlight it; its slots appear on the timetable as a dashed preview. Click again to un-highlight.
+- **Plan counts:** each option shows how many saved plans still survive if you pick it.
+- **Secure:** lock the option and go one level deeper. **< Go Back** undoes the last lock, **Reset Tracker** starts over.
+- **^ / v:** reorder the options at this node (remembered per path).
+- **Add New Option:** add a course (specific section or blank) after the current path.
+- **Branch:** swap a course (and its lab) across all plans sharing that layer. Opens on the plans of your current path.
+- **Delete Branch:** delete every plan below an option (two confirmations).
+- **Remove Duplicates:** drop identical plans.
 
-Branching Plans: Click the "Branch Plan" button next to any blueprint. This duplicates the chosen combination under a new unique System ID and automatically opens the Modification Workspace, allowing you to create a secondary backup path without altering the original.
+# 2. Create New Plan
+Unchanged: builds a plan of blank slots that you can fill in from the Live Tracker.
 
-Deleting Plans: Use the "Delete Plan" button to permanently remove a schedule layout from the tracking system.
+# 3. Flow Planning
+Type the order you want to pick courses in (e.g. VLSI -> VLSI Lab -> Digital Communication Systems -> ...). Ticking "also add its lab right after" adds a theory course's lab automatically.
 
-# 2. Create New Plan Wizard Tab
-Use this tab to build a customized course schedule from scratch while ensuring no immediate timing overlaps occur.
+- **Preview Tree Size:** shows how many complete plans the order produces, how many dead-end paths were removed, and how many valid paths remain after each pick.
+- **Create Full Tree:** generates EVERY plan for that order and **overwrites** all existing plans and saved option orderings. It asks for confirmation twice and first saves `plans_optimized.backup.json`.
 
-Dynamic Course Selection: At each step of the creation process, a dropdown menu presents all remaining unselected course codes. This allows you to pick courses in any arbitrary order.
-
-Clash Prevention: Once a course focus is selected via the dropdown, the interface evaluates your previous selections and displays only the section options that are entirely free of timing conflicts.
-
-Priority Ranking: After selecting sections for all courses, a sorting panel appears. Select a course in the listbox and use the "Move Up" and "Move Down" buttons to order them according to your registration registration risk (e.g., placing highly competitive or low-seat courses at the top).
-
-Saving: Click "Commit Plan to Database File" to save your schedule. The wizard will automatically alert you if an identical combination already exists in your file.
-
-# 3. Modifying an Existing Plan
-Clicking "Modify Plan" on an entry in the Saved Combinations tab opens a modal workspace dialog to adjust or swap an existing schedule.
-
-Using Blank Slots: To swap the timings of two courses or resolve an intermediate clash while modifying, use the "Make Blank" button on a course entry. This marks it as a "[ BLANK SLOT ]" and temporarily releases its locked time minutes.
-
-Replacing Sections: Click "Change Section" on any course to open its specific replacement view. You can also switch your course context inside this view using the top dropdown menu. The interface displays only the options that do not conflict with the non-blank sections currently in the workspace.
-
-Saving Restrictions: You can freely arrange and hold blank slots during your editing session. However, the system enforces a strict validation routine upon saving: you will be blocked from saving if any slots remain blank or if the final layout exactly duplicates another existing system blueprint.
-
-# 4. Live Assistant Tree Mode Tab
-This tab serves as a real-time tracking companion during the actual counseling session to maintain a valid path as classes fill up.
-
-Tracking Progress: The upper frame displays your secured track footprint chain as you lock in choices step-by-step.
-
-Filtering Branches: The system looks at your current state and filters down your saved blueprints. The lower frame presents only the active decision alternatives that match your exact history and order.
-
-Path Convergence Indicators: Next to each available section button, a text indicator displays how many remaining "surviving matrix blueprints" utilize that choice. This helps you select sections that keep the maximum number of backup paths viable.
-
-Correction and Resilience: If a selection fails or a seat is lost unexpectedly, use the "Back (Undo Last Selection)" button to step backward down the decision tree, or click "Reset Tracker" to clear the live memory and restart from the top.
+Rules used: no time-slot clashes; a lab must be taught by the same professor as its theory course (in either pick order); paths where a course has no valid section left are removed, so every plan contains every course in the flow.
