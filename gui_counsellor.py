@@ -690,7 +690,7 @@ def split_course(code, cd):
     return secs, None
 
 
-def build_flow_tree(stages, courses_dict, progress=None):
+def build_flow_tree(stages, courses_dict, progress=None, skips=None):
     """
     Build the FULL selection graph for a flow as a PlanTree.
 
@@ -704,9 +704,13 @@ def build_flow_tree(stages, courses_dict, progress=None):
     Dead-end paths are pruned, so every plan contains one course from every stage (plus its lab).
     Paths that end up in the same situation (same occupied time slots, same pending lab
     professor) share ONE next stage - this is what keeps the tree small.
+    `skips` (optional, one bool per stage): when True, that stage also gets a BLANK option meaning
+    "no professor available, skip this stage". It occupies no time, so later stages are only
+    checked against what was really picked. The blank is listed last (lowest priority).
     Returns (tree, plan_count, dead_end_count, alive_per_stage).
     """
     n = len(stages)
+    skips = list(skips) if skips else [False] * n
     tree = PlanTree(courses_dict)
 
     def options_for(secs):
@@ -729,6 +733,14 @@ def build_flow_tree(stages, courses_dict, progress=None):
             th, lo = split_course(code, courses_dict)
             row.append((options_for(th), options_for(lo) if lo else None))
         alts.append(row)
+
+    skip_sid = []
+    for stage, sk in zip(stages, skips):
+        if sk:
+            code = stage[0] if len(stage) == 1 else "SKIP[" + "|".join(stage) + "]"
+            skip_sid.append(tree.sid_of(_fatten_sec(code, None, courses_dict)))
+        else:
+            skip_sid.append(None)
 
     states = {}      # key -> (kids, total, transitions)
 
@@ -768,6 +780,17 @@ def build_flow_tree(stages, courses_dict, progress=None):
                     if sub[1]:
                         kids.append([sid, 0, sub[0], sub[1]])
                         total += sub[1]
+        if skip_sid[s] is not None:                    # skip this stage: nothing picked, nothing occupied
+            if last:
+                kids.append([skip_sid[s], 1, [], 1])
+                total += 1
+                trans.append((None, True))
+            else:
+                sub = stage_state(s + 1, occ)
+                trans.append((("S", s + 1, occ), True))
+                if sub[1]:
+                    kids.append([skip_sid[s], 0, sub[0], sub[1]])
+                    total += sub[1]
         return finish(key, kids, total, trans)
 
     def lab_state(s, ai, prof, occ1):
@@ -1803,6 +1826,7 @@ class MasterCounsellingApp:
     # FLOW PLANNING TAB
     # ==========================================================================
     def setup_flow_tab(self):
+        self.flow_skips = []             # parallel to flow_stages: True = 'skip allowed' for that stage
         self.flow_stages = []            # each stage: [code] (single) or [code, code, ...] (pick exactly one)
         self._flow_rows = []             # listbox line -> stage index
         self._flow_cache = None          # (key, tree, leaves, dead, alive)
@@ -1822,6 +1846,8 @@ class MasterCounsellingApp:
                        "only the one you end up choosing has to fit).\n"
                        "A course that has a lab in CourseList.csv is automatically joined to it: the lab is picked "
                        "right after the course, with the same professor. Courses without a lab stand alone.\n"
+                       "Select a stage and press 'Toggle Skip Allowed' to add a 'skip this stage' option (for when no "
+                       "professor is available); later stages are then checked only against what you really picked.\n"
                        "Creating the tree generates EVERY clash-free combination. You can then reorder / prune it "
                        "in the Live Tracker."),
                  font=("Helvetica", 11), fg=self.text2, bg=self.bg, justify="left", wraplength=1050
@@ -1848,7 +1874,8 @@ class MasterCounsellingApp:
         side.pack(side="left", fill="y")
         self.btn(side, "▲ Move Up", lambda: self.flow_move(-1), "muted").pack(fill="x", pady=2)
         self.btn(side, "▼ Move Down", lambda: self.flow_move(1), "muted").pack(fill="x", pady=2)
-        self.btn(side, "Remove Stage", self.flow_remove, "danger").pack(fill="x", pady=(10, 2))
+        self.btn(side, "Toggle Skip Allowed", self.flow_toggle_skip, "purple").pack(fill="x", pady=(10, 2))
+        self.btn(side, "Remove Stage", self.flow_remove, "danger").pack(fill="x", pady=2)
         self.btn(side, "Clear Flow", self.flow_clear, "muted").pack(fill="x", pady=2)
 
         tk.Label(body, textvariable=self.flow_info_var, font=("Helvetica", 11), fg=self.text,
@@ -1895,11 +1922,12 @@ class MasterCounsellingApp:
         self.flow_lb.delete(0, tk.END)
         self._flow_rows = []
         for i, st in enumerate(self.flow_stages):
+            tag = "     [skip allowed]" if self.flow_skips[i] else ""
             if len(st) == 1:
-                self.flow_lb.insert(tk.END, f"  {i + 1}.  {self._course_label(st[0])}")
+                self.flow_lb.insert(tk.END, f"  {i + 1}.  {self._course_label(st[0])}{tag}")
                 self._flow_rows.append(i)
             else:
-                self.flow_lb.insert(tk.END, f"  {i + 1}.  PICK ONE OF {len(st)}:")
+                self.flow_lb.insert(tk.END, f"  {i + 1}.  PICK ONE OF {len(st)}:{tag}")
                 self._flow_rows.append(i)
                 for c in st:
                     self.flow_lb.insert(tk.END, f"            •  {self._course_label(c)}")
@@ -1924,6 +1952,7 @@ class MasterCounsellingApp:
         if any(code in st for st in self.flow_stages):
             return
         self.flow_stages.append([code])
+        self.flow_skips.append(False)
         self._flow_changed()
 
     def flow_add_group(self):
@@ -1958,6 +1987,7 @@ class MasterCounsellingApp:
                 return
             dlg.destroy()
             self.flow_stages.append(picked)
+            self.flow_skips.append(False)
             self._flow_changed()
 
         row = tk.Frame(dlg, bg=self.bg)
@@ -1972,6 +2002,7 @@ class MasterCounsellingApp:
         j = i + direction
         if 0 <= j < len(self.flow_stages):
             self.flow_stages[i], self.flow_stages[j] = self.flow_stages[j], self.flow_stages[i]
+            self.flow_skips[i], self.flow_skips[j] = self.flow_skips[j], self.flow_skips[i]
             self._flow_changed()
             self.flow_lb.selection_set(self._flow_rows.index(j))
 
@@ -1980,10 +2011,21 @@ class MasterCounsellingApp:
         if i is None:
             return
         del self.flow_stages[i]
+        del self.flow_skips[i]
         self._flow_changed()
+
+    def flow_toggle_skip(self):
+        i = self._flow_selected_stage()
+        if i is None:
+            messagebox.showinfo("Select a stage", "Click a stage in the list first.")
+            return
+        self.flow_skips[i] = not self.flow_skips[i]
+        self._flow_changed()
+        self.flow_lb.selection_set(self._flow_rows.index(i))
 
     def flow_clear(self):
         self.flow_stages = []
+        self.flow_skips = []
         self._flow_changed()
 
     def _flow_progress(self, n):
@@ -1992,15 +2034,15 @@ class MasterCounsellingApp:
 
     def _flow_stats(self):
         """(tree, plan_count, dead_ends, alive_per_stage) for the current flow; cached until it changes."""
-        key = tuple(tuple(st) for st in self.flow_stages)
+        key = (tuple(tuple(st) for st in self.flow_stages), tuple(self.flow_skips))
         if self._flow_cache and self._flow_cache[0] == key:
             return self._flow_cache[1:]
         self.root.config(cursor="watch")
         self.flow_info_var.set("Building…")
         self.root.update_idletasks()
         try:
-            tree, leaves, dead, alive = build_flow_tree([list(st) for st in key], self.courses_dict,
-                                                        progress=self._flow_progress)
+            tree, leaves, dead, alive = build_flow_tree([list(st) for st in key[0]], self.courses_dict,
+                                                        progress=self._flow_progress, skips=list(key[1]))
         finally:
             self.root.config(cursor="")
         self._flow_cache = (key, tree, leaves, dead, alive)
@@ -2010,8 +2052,10 @@ class MasterCounsellingApp:
         lines = [f"Complete clash-free plans: {leaves:,}     Dead-end paths removed: {dead:,}",
                  f"Existing plans that would be overwritten: {self.tree.total():,}",
                  "Valid partial paths after each stage:  " +
-                 "   ".join(f"{i}. {self._stage_short(st)} → {alive[i]:,}"
+                 "   ".join(f"{i}. {self._stage_short(st)}{'*' if self.flow_skips[i - 1] else ''} → {alive[i]:,}"
                              for i, st in enumerate(self.flow_stages, 1))]
+        if any(self.flow_skips):
+            lines.append("* = skip allowed at this stage")
         return "\n".join(lines)
 
     def flow_preview(self):
@@ -2036,7 +2080,8 @@ class MasterCounsellingApp:
             return
 
         existing = self.tree.total()
-        path_str = " > ".join(self._stage_short(st) for st in self.flow_stages)
+        path_str = " > ".join(self._stage_short(st) + ("*" if sk else "")
+                              for st, sk in zip(self.flow_stages, self.flow_skips))
         msg1 = (f"This will REPLACE all {existing:,} existing plan(s) with {leaves:,} newly generated "
                 f"plan(s) for:\n\n  {path_str}\n\n"
                 f"A backup of the current file will be saved first. Continue?")
